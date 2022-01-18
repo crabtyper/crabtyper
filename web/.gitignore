@@ -2,4 +2,4 @@
 /target/
 /Cargo.lock
 
-./output.css
+output.css
