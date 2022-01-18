@@ -1,14 +1,16 @@
 use yew::prelude::*;
-use yew::{classes, html};
+
+use crate::components::header::Header;
+use crate::components::vim::Vim;
 
 #[function_component(App)]
 pub fn app() -> Html {
     html! {
-        <main>
-            <img class="logo" src="https://yew.rs/img/logo.png" alt="Yew logo" />
-            <h1>{ "Hello World!" }</h1>
-            <span class="subtitle">{ "from Yew with " }<i class="heart" /></span>
-            <p class={classes!("bg-red-400", "font-bold")}>{"Test!"}</p>
+        <main class="container mx-auto mt-6">
+            <div class="flex flex-col gap-16">
+                <Header />
+                <Vim />
+            </div>
         </main>
     }
 }

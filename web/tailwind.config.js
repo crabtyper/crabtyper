@@ -6,9 +6,12 @@ module.exports = {
     "./src/**/*.css",
   ],
   theme: {
-     colors: {
+    fontFamily: {
+      sans: ['Hack'],
+    },
+    colors: {
        "black": "#1E222A",
-       "black-light": "#3E4451",
+       "black-light": "#2B2F37",
        "white": "#ABB2BF",
        "white-light": "#C8CCD4",
        "red": "#BE5046",
