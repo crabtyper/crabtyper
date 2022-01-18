@@ -5,9 +5,9 @@
   </p>
 </div>
 
-## ✅ TODO
+## TODO
 
-### 🚧 MVP
+### MVP
 
 - Homepage
   - Modes
@@ -20,7 +20,7 @@
     - [ ] consistency
     - [ ] time
 
-### 🏁 End Goal
+### End Goal
 
 - Auth
   - [ ] github
