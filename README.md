@@ -4,7 +4,6 @@
     <strong>A speedtyping web app writtin 🦀</strong>
   </p>
 </div>
-# Crabtyper: a speedtyping web app written in 🦀
 
 ## TODO
 
