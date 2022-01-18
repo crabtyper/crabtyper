@@ -2,7 +2,7 @@
 
 ## TODO
 
-### [ ] First phase (MVP)
+### First phase (MVP)
 
 - Homepage
   - Modes
@@ -15,7 +15,7 @@
     - [ ] consistency
     - [ ] time
 
-### [ ] Second phase
+### Second phase
 
 - Auth
   - [ ] github
