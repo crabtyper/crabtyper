@@ -1,7 +1,7 @@
 <div align="center">
-  <h1>Crabtyper</h1>
+  <h1>Crabtyper 🦀</h1>
   <p>
-    <strong>A speedtyping web app written in 🦀</strong>
+    <strong>A speedtyping web app written in Rust</strong>
   </p>
 </div>
 
