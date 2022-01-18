@@ -14,7 +14,7 @@
   - Results
     - [ ] wpm
     - [ ] acc
-    - [ ] consitency
+    - [ ] consistency
     - [ ] time
 
 ### [ ] Second phase
