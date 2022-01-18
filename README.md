@@ -1,8 +1,14 @@
-# Speedtyping webapp written in :crab:
+<div align="center">
+  <h1>Crabtyper</h1>
+  <p>
+    <strong>A speedtyping web app writtin 🦀</strong>
+  </p>
+</div>
+# Crabtyper: a speedtyping web app written in 🦀
 
 ## TODO
 
-### First phase (MVP)
+### MVP
 
 - Homepage
   - Modes
@@ -15,7 +21,7 @@
     - [ ] consistency
     - [ ] time
 
-### Second phase
+### End Goal
 
 - Auth
   - [ ] github
