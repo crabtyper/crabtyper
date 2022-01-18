@@ -9,8 +9,6 @@
     - Code
       - [ ] can select different languages
       - [ ] syntax highlighting
-    - Time
-      - [ ] can select different times
   - Results
     - [ ] wpm
     - [ ] acc
