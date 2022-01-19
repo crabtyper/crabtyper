@@ -4,7 +4,7 @@ use yew::prelude::*;
 pub fn statusline() -> Html {
     html! {
         <>
-            <div class="flex flex-row justify-between w-full bg-black-light font-bold">
+            <div class="flex flex-row justify-between w-full bg-gray font-bold">
                 <div>
                     <p class="bg-green text-black px-4">{"NORMAL"}</p>
                 </div>
