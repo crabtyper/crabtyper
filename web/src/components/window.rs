@@ -1,18 +1,12 @@
 use yew::prelude::*;
 
+use crate::components::linenumber::LineNumber;
+
 #[function_component(Window)]
 pub fn window() -> Html {
     html! {
         <div class="flex flex-row p-6 gap-2">
-            <div class="text-white">
-                <p>{"1"}</p>
-                <p>{"2"}</p>
-                <p>{"3"}</p>
-                <p>{"4"}</p>
-                <p>{"5"}</p>
-                <p>{"6"}</p>
-                <p>{"7"}</p>
-            </div>
+            <LineNumber />
             <div>
                 <p>{"// The code is from Simple FileSharing Service and is licensed under the MIT license."}</p>
                 <p>{"let ctx = PageContext {"}</p>
