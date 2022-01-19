@@ -1,3 +1,4 @@
+pub mod buffer;
 pub mod footer;
 pub mod header;
 pub mod pagelayout;
