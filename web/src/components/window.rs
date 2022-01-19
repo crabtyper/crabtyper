@@ -1,7 +1,7 @@
 use yew::prelude::*;
 
-#[function_component(Buffer)]
-pub fn buffer() -> Html {
+#[function_component(Window)]
+pub fn window() -> Html {
     html! {
         <div class="flex flex-row p-6 gap-2">
             <div class="text-white">
