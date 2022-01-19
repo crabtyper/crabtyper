@@ -7,7 +7,7 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      sans: ['Hack'],
+      sans: ["Hack"],
     },
     colors: {
        "black": "#1E222A",
@@ -25,5 +25,25 @@ module.exports = {
     },
   },
   variants: {},
-  plugins: [],
+  plugins: [
+    function ({ addComponents }) {
+      addComponents({
+        ".container": {
+          maxWidth: "100%",
+          "@screen sm": {
+            maxWidth: "640px",
+          },
+          "@screen md": {
+            maxWidth: "768px",
+          },
+          "@screen lg": {
+            maxWidth: "1000px",
+          },
+          "@screen xl": {
+            maxWidth: "1000px",
+          },
+        }
+      })
+    }
+  ],
 };
