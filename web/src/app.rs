@@ -7,7 +7,7 @@ use crate::components::vim::Vim;
 pub fn app() -> Html {
     html! {
         <main class="container mx-auto mt-6">
-            <div class="flex flex-col gap-16">
+            <div class="flex flex-col gap-48">
                 <Header />
                 <Vim />
             </div>
