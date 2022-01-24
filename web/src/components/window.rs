@@ -91,18 +91,18 @@ pub fn window(props: &WindowProps) -> Html {
     };
 
     html! {
-    <div>
-        <div class="flex flex-row px-6 pt-6 gap-2">
-            <LineNumber />
-            <pre {onclick} class="relative display-inline w-full" style="tab-size: 4;">
-                <span class="text-white">{"// The code is from Simple FileSharing Service and is licensed under the MIT license."}</span>
-                    <br/>
-                    <span ref={typed_text_ref} class="text-blue" style="word-break: break-all ">{""}</span>
-                    <span ref={cursor_ref} class="bg-white-light text-black-light">{&props.snippet[..1]}</span>
-                    <span ref={remaining_text_ref} class="text-white" style="word-break: break-all;">{&props.snippet[1..]}</span>
-                <input ref={input_ref} class="text-white" autocomplete="off" type="text" {onkeydown} style="position: absolute; width: 1px; left: -10000px;"/>
-            </pre>
+        <div>
+            <div class="flex flex-row px-6 pt-6 gap-2">
+                <LineNumber lines={props.snippet.lines().count()}/>
+                <pre {onclick} class="relative display-inline w-full" style="tab-size: 4;">
+                    <span class="text-white">{"// The code is from Simple FileSharing Service and is licensed under the MIT license."}</span>
+                        <br/>
+                        <span ref={typed_text_ref} class="text-blue" style="word-break: break-all ">{""}</span>
+                        <span ref={cursor_ref} class="bg-white-light text-black-light">{&props.snippet[..1]}</span>
+                        <span ref={remaining_text_ref} class="text-white" style="word-break: break-all;">{&props.snippet[1..]}</span>
+                    <input ref={input_ref} class="text-white" autocomplete="off" type="text" {onkeydown} style="position: absolute; width: 1px; left: -10000px;"/>
+                </pre>
+            </div>
         </div>
-    </div>
     }
 }

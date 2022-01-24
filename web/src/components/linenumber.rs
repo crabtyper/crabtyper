@@ -1,19 +1,21 @@
 use yew::prelude::*;
 
+#[derive(Properties, PartialEq)]
+pub struct LineNumberProps {
+    pub lines: usize,
+}
+
 #[function_component(LineNumber)]
-pub fn line_number() -> Html {
+pub fn line_number(props: &LineNumberProps) -> Html {
+    let items = 1..=props.lines + 1;
+
     html! {
         <div class="text-white">
-            <p>{"1"}</p>
-            <p>{"2"}</p>
-            <p>{"3"}</p>
-            <p>{"4"}</p>
-            <p>{"5"}</p>
-            <p>{"6"}</p>
-            <p>{"7"}</p>
-            <p>{"8"}</p>
-            <p>{"9"}</p>
-            <p>{"10"}</p>
+            {
+                items.into_iter().map(|line| {
+                    html!{<p key={line}>{line}</p>}
+                }).collect::<Html>()
+            }
         </div>
     }
 }
