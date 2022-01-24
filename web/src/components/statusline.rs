@@ -9,7 +9,7 @@ pub fn statusline() -> Html {
                     <p class="bg-green text-black px-4">{"NORMAL"}</p>
                 </div>
                 <div class="flex flew-row gap-4">
-                    <p>{"Rust"}</p>
+                    <p>{"Javascript"}</p>
                     <p class="bg-green text-black px-4">{"TOP"}</p>
                 </div>
             </div>

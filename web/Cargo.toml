@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 yew = "0.19"
+gloo = "0.6.0"
+web-sys = "0.3.56"
