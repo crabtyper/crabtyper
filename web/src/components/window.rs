@@ -4,8 +4,14 @@ use yew::prelude::*;
 
 use crate::components::linenumber::LineNumber;
 
+#[derive(Properties, PartialEq)]
+pub struct WindowProps {
+    pub onkeydown: Callback<bool>,
+    pub snippet: String,
+}
+
 #[function_component(Window)]
-pub fn window() -> Html {
+pub fn window(props: &WindowProps) -> Html {
     let input_ref = use_node_ref();
     let typed_text_ref = use_node_ref();
     let cursor_ref = use_node_ref();
@@ -58,6 +64,7 @@ pub fn window() -> Html {
     }
 
     let onkeydown = {
+        let callback = props.onkeydown.clone();
         let cursor_ref = cursor_ref.clone();
         let remaining_text_ref = remaining_text_ref.clone();
         let typed_text_ref = typed_text_ref.clone();
@@ -73,33 +80,29 @@ pub fn window() -> Html {
 
             if !remaining.is_empty() {
                 if is_key_correct(key, &cursor.inner_text()[..]) {
+                    callback.emit(false);
                     set_next_char(&remaining_text, &typed_text, &cursor);
                 } else {
                 }
+            } else {
+                callback.emit(true);
             }
         })
     };
 
     html! {
-            <div class="flex flex-row px-6 pt-6 gap-2">
-                <LineNumber />
-                <pre {onclick} class="relative display-inline w-full" style="tab-size: 4;">
-                    <span class="text-white">{"// The code is from Simple FileSharing Service and is licensed under the MIT license."}</span>
-                        <br/>
-                        <span ref={typed_text_ref} class="text-blue" style="word-break: break-all; background: none; display: inline; padding: 0px;">{""}</span>
-                        <span ref={cursor_ref} class="bg-white-light text-black-light">{"i"}</span>
-                        <span ref={remaining_text_ref} class="text-white" style="word-break: break-all; background: none; padding: 0px; display: inline;">
-    {"mpl Default for FileFlags {
-\tfn default() -> Self {
-\tSelf {
-\t\tpublic: true,
-\t\tprotected: false,
-\t\tno_preview: false,
-\t\t}
-\t}
-}"}                  </span>
-                    <input ref={input_ref} class="text-white" autocomplete="off" type="text" {onkeydown} style="position: absolute; width: 1px; left: -10000px;"/>
-                </pre>
-            </div>
-        }
+    <div>
+        <div class="flex flex-row px-6 pt-6 gap-2">
+            <LineNumber />
+            <pre {onclick} class="relative display-inline w-full" style="tab-size: 4;">
+                <span class="text-white">{"// The code is from Simple FileSharing Service and is licensed under the MIT license."}</span>
+                    <br/>
+                    <span ref={typed_text_ref} class="text-blue" style="word-break: break-all ">{""}</span>
+                    <span ref={cursor_ref} class="bg-white-light text-black-light">{&props.snippet[..1]}</span>
+                    <span ref={remaining_text_ref} class="text-white" style="word-break: break-all;">{&props.snippet[1..]}</span>
+                <input ref={input_ref} class="text-white" autocomplete="off" type="text" {onkeydown} style="position: absolute; width: 1px; left: -10000px;"/>
+            </pre>
+        </div>
+    </div>
+    }
 }
