@@ -26,23 +26,30 @@ pub fn window() -> Html {
     };
 
     fn set_next_char(remaining_text: &HtmlElement, typed_text: &HtmlElement, cursor: &HtmlElement) {
-        let current_char = cursor.inner_text();
+        let mut current_char = cursor.inner_text();
         let mut remaining = remaining_text.inner_text();
         let next_char = remaining.remove(0);
 
-        if next_char == '\n' {
-            cursor.set_inner_text("↵\n");
-            remaining_text.set_inner_text(&remaining.to_string());
-            typed_text.set_inner_text(&*format!("{}{}", typed_text.inner_text(), current_char));
-        } else if next_char == '\t' {
-            cursor.set_inner_text(&next_char.to_string());
-            typed_text.set_inner_text(&*format!("{}{}", typed_text.inner_text(), current_char));
-            remaining_text.set_inner_text(&remaining.to_string());
-            set_next_char(remaining_text, typed_text, cursor);
-        } else {
-            cursor.set_inner_text(&next_char.to_string());
-            remaining_text.set_inner_text(&remaining.to_string());
-            typed_text.set_inner_text(&*format!("{}{}", typed_text.inner_text(), current_char));
+        if current_char == "↵\n" {
+            current_char = String::from("\n");
+        };
+
+        typed_text.set_inner_text(&*format!("{}{}", typed_text.inner_text(), current_char));
+
+        match next_char {
+            '\n' => {
+                remaining_text.set_inner_text(&remaining.to_string());
+                cursor.set_inner_text("↵\n");
+            }
+            '\t' => {
+                remaining_text.set_inner_text(&remaining.to_string());
+                cursor.set_inner_text(&next_char.to_string());
+                set_next_char(remaining_text, typed_text, cursor);
+            }
+            _ => {
+                remaining_text.set_inner_text(&remaining.to_string());
+                cursor.set_inner_text(&next_char.to_string());
+            }
         }
     }
 
