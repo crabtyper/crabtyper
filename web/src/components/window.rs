@@ -6,7 +6,7 @@ use crate::components::linenumber::LineNumber;
 
 #[derive(Properties, PartialEq)]
 pub struct WindowProps {
-    pub onkeydown: Callback<bool>,
+    pub has_started: UseStateHandle<bool>,
     pub snippet: String,
 }
 
@@ -63,8 +63,14 @@ pub fn window(props: &WindowProps) -> Html {
         key == current_char || (key == "Enter" && current_char == "↵\n")
     }
 
+    fn is_first_key(remaining: &str, snippet: &str) -> bool {
+        remaining == &snippet[1..]
+    }
+
     let onkeydown = {
-        let callback = props.onkeydown.clone();
+        let has_started = props.has_started.clone();
+        let snippet = props.snippet.clone();
+
         let cursor_ref = cursor_ref.clone();
         let remaining_text_ref = remaining_text_ref.clone();
         let typed_text_ref = typed_text_ref.clone();
@@ -79,13 +85,14 @@ pub fn window(props: &WindowProps) -> Html {
             let remaining = remaining_text.inner_text();
 
             if !remaining.is_empty() {
-                if is_key_correct(key, &cursor.inner_text()[..]) {
-                    callback.emit(false);
-                    set_next_char(&remaining_text, &typed_text, &cursor);
-                } else {
+                if is_first_key(&remaining, &snippet) {
+                    has_started.set(true);
                 }
-            } else {
-                callback.emit(true);
+                if is_key_correct(key, &cursor.inner_text()[..]) {
+                    set_next_char(&remaining_text, &typed_text, &cursor);
+                }
+            } else if *has_started {
+                has_started.set(false);
             }
         })
     };
