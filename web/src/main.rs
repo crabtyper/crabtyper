@@ -1,8 +1,7 @@
-pub mod components;
+mod components;
+mod state;
 
-mod app;
-
-use app::App;
+use crate::components::app::App;
 
 fn main() {
     yew::start_app::<App>();

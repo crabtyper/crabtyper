@@ -1,4 +1,3 @@
-use gloo::console::debug;
 use web_sys::{HtmlElement, HtmlInputElement};
 use yew::prelude::*;
 
@@ -17,20 +16,6 @@ pub fn window(props: &WindowProps) -> Html {
     let cursor_ref = use_node_ref();
     let remaining_text_ref = use_node_ref();
 
-    use_effect(|| {
-        debug!("Window has rendered...");
-        || ()
-    });
-
-    let onclick = {
-        let input_ref = input_ref.clone();
-
-        Callback::from(move |_| {
-            let input = input_ref.cast::<HtmlInputElement>().unwrap();
-            input.focus().unwrap();
-        })
-    };
-
     fn set_next_char(remaining_text: &HtmlElement, typed_text: &HtmlElement, cursor: &HtmlElement) {
         let mut current_char = cursor.inner_text();
         let mut remaining = remaining_text.inner_text();
@@ -40,20 +25,20 @@ pub fn window(props: &WindowProps) -> Html {
             current_char = String::from("\n");
         };
 
-        typed_text.set_inner_text(&*format!("{}{}", typed_text.inner_text(), current_char));
+        typed_text.set_inner_text(&format!("{}{}", typed_text.inner_text(), current_char));
 
         match next_char {
             '\n' => {
-                remaining_text.set_inner_text(&remaining.to_string());
+                remaining_text.set_inner_text(&remaining);
                 cursor.set_inner_text("↵\n");
             }
             '\t' => {
-                remaining_text.set_inner_text(&remaining.to_string());
+                remaining_text.set_inner_text(&remaining);
                 cursor.set_inner_text(&next_char.to_string());
                 set_next_char(remaining_text, typed_text, cursor);
             }
             _ => {
-                remaining_text.set_inner_text(&remaining.to_string());
+                remaining_text.set_inner_text(&remaining);
                 cursor.set_inner_text(&next_char.to_string());
             }
         }
@@ -66,6 +51,15 @@ pub fn window(props: &WindowProps) -> Html {
     fn is_first_key(remaining: &str, snippet: &str) -> bool {
         remaining == &snippet[1..]
     }
+
+    let onclick = {
+        let input_ref = input_ref.clone();
+
+        Callback::from(move |_| {
+            let input = input_ref.cast::<HtmlInputElement>().unwrap();
+            input.focus().unwrap();
+        })
+    };
 
     let onkeydown = {
         let has_started = props.has_started.clone();
@@ -88,7 +82,7 @@ pub fn window(props: &WindowProps) -> Html {
                 if is_first_key(&remaining, &snippet) {
                     has_started.set(true);
                 }
-                if is_key_correct(key, &cursor.inner_text()[..]) {
+                if is_key_correct(key, &cursor.inner_text()) {
                     set_next_char(&remaining_text, &typed_text, &cursor);
                 }
             } else if *has_started {
@@ -101,13 +95,15 @@ pub fn window(props: &WindowProps) -> Html {
         <div>
             <div class="flex flex-row px-6 pt-6 gap-2">
                 <LineNumber lines={props.snippet.lines().count()}/>
-                <pre {onclick} class="relative display-inline w-full" style="tab-size: 4;">
-                    <span class="text-white">{"// The code is from Simple FileSharing Service and is licensed under the MIT license."}</span>
-                        <br/>
-                        <span ref={typed_text_ref} class="text-blue" style="word-break: break-all ">{""}</span>
-                        <span ref={cursor_ref} class="bg-white-light text-black-light">{&props.snippet[..1]}</span>
-                        <span ref={remaining_text_ref} class="text-white" style="word-break: break-all;">{&props.snippet[1..]}</span>
-                    <input ref={input_ref} class="text-white" autocomplete="off" type="text" {onkeydown} style="position: absolute; width: 1px; left: -10000px;"/>
+                <pre {onclick} class="relative display-inline w-full break-all" style="tab-size: 4;">
+                    <span class="text-white">
+                        {"// The code is from Simple FileSharing Service and is licensed under the MIT license."}
+                    </span>
+                    <br/>
+                    <span ref={typed_text_ref} class="text-blue">{""}</span>
+                    <span ref={cursor_ref} class="bg-white-light text-black-light">{&props.snippet[..1]}</span>
+                    <span ref={remaining_text_ref} class="text-white">{&props.snippet[1..]}</span>
+                    <input ref={input_ref} {onkeydown} class="text-white" autocomplete="off" type="text" style="position: absolute; width: 1px; left: -10000px;"/>
                 </pre>
             </div>
         </div>
