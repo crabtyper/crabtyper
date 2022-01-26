@@ -1,5 +1,4 @@
 mod components;
-mod state;
 
 use crate::components::app::App;
 
