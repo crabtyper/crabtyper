@@ -4,8 +4,8 @@ use yew::prelude::*;
 pub fn header() -> Html {
     html! {
         <header class="flex flex-row justify-between font-bold">
-            <p>{"CrabTyper"}</p>
-            <p>{"Brunkel"}</p>
+            <a href="#">{"CrabTyper"}</a>
+            <a href="#">{"Brunkel"}</a>
         </header>
     }
 }
