@@ -4,7 +4,7 @@ use yew::prelude::*;
 pub struct StatusLineProps {
     pub mode: String,
     pub timer: String,
-    pub wpm: i32,
+    pub wpm: u32,
     pub lang: String,
     pub progress: String,
 }

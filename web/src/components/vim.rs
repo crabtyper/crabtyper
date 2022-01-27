@@ -1,6 +1,7 @@
 use std::ops::Deref;
 use std::{cell::RefCell, rc::Rc};
 
+use gloo::console::debug;
 use gloo::timers::callback::Interval;
 use yew::prelude::*;
 
@@ -116,8 +117,12 @@ pub fn vim() -> Html {
     };
 
     let wpm = {
-        let minutes_past = *sec_past as f64 / 60.0;
-        ((state.index as f64 / 5.0) / minutes_past).floor() as i32
+        let minutes_past = *sec_past as f32 / 60.0;
+        if minutes_past > 0.0 {
+            ((state.index as f32 / 5.0) / minutes_past).floor() as u32
+        } else {
+            0_u32
+        }
     };
 
     html! {
