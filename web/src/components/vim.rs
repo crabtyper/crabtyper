@@ -39,6 +39,7 @@ pub fn vim() -> Html {
 
             move |_| {
                 if state.status == Status::Playing {
+                    sec_past.set(0);
                     let mut sec = *sec_past;
                     *timer.borrow_mut() = Some(Interval::new(1000, move || {
                         sec += 1;
@@ -46,8 +47,7 @@ pub fn vim() -> Html {
                     }));
                 } else {
                     *timer.borrow_mut() = None;
-                    sec_past.set(0);
-                    state.dispatch(Action::Reset);
+                    // state.dispatch(Action::Reset);
                 }
                 || ()
             }
@@ -61,7 +61,7 @@ pub fn vim() -> Html {
 
     let progress = {
         let progress = (((state.index + 1) as f64 / state.text.len() as f64) * 100.0).floor();
-        if progress == 0.0 {
+        if progress == 0.0 || state.index == 0 {
             "TOP".to_string()
         } else {
             format!("{progress}%")

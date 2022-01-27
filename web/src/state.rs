@@ -23,8 +23,13 @@ impl Reducible for State {
 
     fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
         match action {
+            // TODO: clean this up
             Action::KeyPress(key) => {
-                let mut status = Status::Playing;
+                let mut status = if self.status != Status::Passed {
+                    Status::Playing
+                } else {
+                    self.status
+                };
                 let mut index = self.index;
 
                 let current_char = self.text.chars().nth(index).unwrap();
@@ -34,6 +39,12 @@ impl Reducible for State {
                         status = Status::Passed;
                     } else {
                         index += 1;
+                        let mut next_char = self.text.chars().nth(index).unwrap();
+
+                        while next_char == '\t' && index < self.text.len() {
+                            index += 1;
+                            next_char = self.text.chars().nth(index).unwrap();
+                        }
                     }
                 }
 
@@ -62,8 +73,7 @@ impl State {
 \t\tno_preview: false,
 \t\t}
 \t}
-}
-"
+}"
             .to_string(),
             wrong_text: "".to_string(),
             index: 0,
