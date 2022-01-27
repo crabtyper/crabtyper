@@ -6,7 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-yew = "0.19"
-gloo = "0.6.0"
+strum = "0.23"
+strum_macros = "0.23"
 web-sys = "0.3.56"
-js-sys = "0.3.56"
+gloo = "0.6.0"
+yew = "0.19"

@@ -26,7 +26,7 @@ pub fn statusline(props: &StatusLineProps) -> Html {
                 </div>
                 <div class="flex flew-row gap-4 items-center">
                     <p>{&props.lang}</p>
-                    <p class="bg-green text-black px-4 py-1">{&props.progress}</p>
+                    <p class="bg-green text-black px-4 py-1 min-w-[5rem] text-center">{&props.progress}</p>
                 </div>
             </div>
         </>
