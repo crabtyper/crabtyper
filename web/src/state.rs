@@ -30,9 +30,10 @@ impl Reducible for State {
                 } else {
                     self.status
                 };
-                let mut index = self.index;
 
+                let mut index = self.index;
                 let current_char = self.text.chars().nth(index).unwrap();
+                let mut mistakes = self.mistakes;
 
                 if current_char == key {
                     if (index + 1) == self.text.len() {
@@ -46,13 +47,14 @@ impl Reducible for State {
                             next_char = self.text.chars().nth(index).unwrap();
                         }
                     }
+                } else {
+                    mistakes += 1;
                 }
-
                 State {
                     text: self.text.clone(),
                     wrong_text: self.wrong_text.clone(),
                     index,
-                    mistakes: self.mistakes,
+                    mistakes,
                     status,
                 }
                 .into()

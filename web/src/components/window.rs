@@ -33,7 +33,7 @@ pub fn window(props: &WindowProps) -> Html {
                         {"// The code is from Simple FileSharing Service and is licensed under the MIT license."}
                     </span>
                     <br/>
-                    <span class="text-blue break-all">{&props.typed_text}</span>
+                    <span class="text-green break-all">{&props.typed_text}</span>
                     <span class="bg-white-light text-black-light">{&props.current_char.to_string()}</span>
                     <span class="text-white">{&props.remaining_text}</span>
                     <input

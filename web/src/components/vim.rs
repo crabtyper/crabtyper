@@ -68,7 +68,7 @@ pub fn vim() -> Html {
         }
     };
 
-    let lines = { state.text.split('\n').count() - 1 };
+    let lines = { state.text.split('\n').count() };
 
     let time = {
         let time = *sec_past;
@@ -90,6 +90,7 @@ pub fn vim() -> Html {
 
     let on_key_press = {
         let cursor = cursor.clone();
+        let state = state.clone();
 
         Callback::from(move |e: KeyboardEvent| {
             let key;
@@ -114,6 +115,11 @@ pub fn vim() -> Html {
         })
     };
 
+    let wpm = {
+        let minutes_past = *sec_past as f64 / 60.0;
+        ((state.index as f64 / 5.0) / minutes_past).floor() as i32
+    };
+
     html! {
         <div class="w-full bg-black-light h-[36rem] shadow-2xl text-lg">
             <div class="flex flex-col justify-between h-full">
@@ -127,7 +133,7 @@ pub fn vim() -> Html {
                 <Statusline
                     timer={time}
                     lang={"Rust"}
-                    wpm={120}
+                    {wpm}
                     {progress}
                     {mode}
                 />
