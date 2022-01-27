@@ -7,33 +7,18 @@
 
 ## TODO
 
-### MVP
+### API
 
-- Homepage
-  - Modes
-    - Code
-      - [ ] can select different languages
-      - [ ] syntax highlighting
-  - Results
-    - [ ] wpm
-    - [ ] acc
-    - [ ] consistency
-    - [ ] time
+- [ ] setup db
+- [ ] create scheme
+- [ ] GET random snippet
 
-### End Goal
+### WEB
 
-- Auth
-  - [ ] github
-  - [ ] google
-- Homepage
-  - Modes
-    - Code
-    - Time
-    - Words
-      - [ ] can select different amounts
-    - Quote
-      - [ ] can select different lengths
-  - Results
-    - [ ] graph
-- Profilepage
-  - [ ] ...
+- [ ] get random language from API
+- [ ] blinking cursor
+- [ ] style statusline
+- [ ] refactor state
+- [ ] accuracy, combos
+- [ ] results
+- [ ] syntax highlighting
