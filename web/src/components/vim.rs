@@ -1,10 +1,10 @@
 use std::ops::Deref;
 use std::{cell::RefCell, rc::Rc};
 
-use gloo::console::debug;
 use gloo::timers::callback::Interval;
 use yew::prelude::*;
 
+use crate::components::result::Result;
 use crate::components::statusline::Statusline;
 use crate::components::window::Window;
 use crate::constant::Status;
@@ -126,23 +126,29 @@ pub fn vim() -> Html {
     };
 
     html! {
-        <div class="w-full bg-black-light h-[36rem] shadow-2xl text-lg">
-            <div class="flex flex-col justify-between h-full">
-                <Window
-                    current_char={cursor.deref().clone()}
-                    {typed_text}
-                    {remaining_text}
-                    {lines}
-                    {on_key_press}
-                />
-                <Statusline
-                    timer={time}
-                    lang={"Rust"}
-                    {wpm}
-                    {progress}
-                    {mode}
-                />
-            </div>
-        </div>
+        <>
+            if state.status == Status::Passed {
+                <Result {wpm} {time} accuracy={98} mistakes={3}/>
+            } else {
+                <div class="w-full bg-black-light h-[36rem] shadow-2xl text-lg">
+                    <div class="flex flex-col justify-between h-full">
+                        <Window
+                            current_char={cursor.deref().clone()}
+                            {typed_text}
+                            {remaining_text}
+                            {lines}
+                            {on_key_press}
+                        />
+                        <Statusline
+                            timer={time}
+                            lang={"Rust"}
+                            {wpm}
+                            {progress}
+                            {mode}
+                        />
+                    </div>
+                </div>
+            }
+        </>
     }
 }

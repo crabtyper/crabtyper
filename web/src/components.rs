@@ -3,6 +3,7 @@ pub mod footer;
 pub mod header;
 pub mod linenumber;
 pub mod pagelayout;
+pub mod result;
 pub mod statusline;
 pub mod vim;
 pub mod window;

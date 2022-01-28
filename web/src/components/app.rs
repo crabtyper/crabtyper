@@ -13,7 +13,7 @@ pub fn app() -> Html {
                 <Header />
             </div>
             <main>
-                <Vim />
+                <Vim/>
             </main>
             <div class="mb-8">
                 <Footer />
