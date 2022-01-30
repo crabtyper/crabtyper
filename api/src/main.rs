@@ -1,25 +1,42 @@
-use actix_web::{get, web, App, HttpServer};
+#[macro_use]
+extern crate diesel;
+extern crate dotenv;
 
-// This struct represents state
-struct AppState {
-    app_name: String,
-}
+use actix_web::{web, App, HttpServer};
+use diesel::{
+    r2d2::{self, ConnectionManager},
+    SqliteConnection,
+};
 
-#[get("/")]
-async fn index(data: web::Data<AppState>) -> String {
-    let app_name = &data.app_name; // <- get app_name
+pub mod db;
+pub mod handlers;
+pub mod models;
+pub mod schema;
 
-    format!("Hello {}!", app_name) // <- response with app_name
-}
+pub type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 #[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
+pub async fn main() -> std::io::Result<()> {
+    dotenv::dotenv().ok();
+
+    std::env::set_var("RUST_LOG", "actix_web=debug");
+
+    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+
+    let manager = ConnectionManager::<SqliteConnection>::new(database_url);
+
+    let pool: Pool = r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed  to create pool");
+
+    HttpServer::new(move || {
         App::new()
-            .data(AppState {
-                app_name: String::from("Actix-web"),
-            })
-            .service(index)
+            .data(pool.clone())
+            .route("/languages", web::get().to(handlers::get_languages))
+            .route("/languages", web::post().to(handlers::add_language))
+            // .route("/snippet/{lang}", web::get().to(handlers::get_snippet))
+            .route("/snippet/random", web::get().to(handlers::get_snippet))
+            .route("/snippet", web::post().to(handlers::add_snippet))
     })
     .bind("127.0.0.1:5000")?
     .run()
