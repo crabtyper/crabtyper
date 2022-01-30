@@ -15,6 +15,7 @@
 
 ### WEB
 
+- [ ] fix mistakes bug
 - [ ] get random language from API
 - [ ] blinking cursor
 - [ ] style statusline
