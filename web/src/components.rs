@@ -1,5 +1,6 @@
 pub mod app;
 pub mod footer;
+pub mod game;
 pub mod header;
 pub mod linenumber;
 pub mod pagelayout;

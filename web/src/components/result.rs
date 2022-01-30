@@ -1,15 +1,32 @@
+use gloo::{console::debug, events::EventListener};
+use wasm_bindgen::JsCast;
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]
 pub struct ResultProps {
     pub time: String,
     pub wpm: u32,
-    pub accuracy: u32,
-    pub mistakes: u32,
+    pub accuracy: u8,
+    pub mistakes: u8,
+    pub on_reset: Callback<bool>,
 }
 
 #[function_component(Result)]
 pub fn result(props: &ResultProps) -> Html {
+    use_effect({
+        let on_reset = props.on_reset.clone();
+        move || {
+            let document = gloo::utils::document();
+            let listener = EventListener::new(&document, "keydown", move |event| {
+                let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap();
+                if event.key() == "r" {
+                    on_reset.emit(true);
+                }
+            });
+            || drop(listener)
+        }
+    });
+
     html! {
         <div class="flex flex-col justify-center items-center gap-6">
             <div class="flex flex-col items-center gap-2">

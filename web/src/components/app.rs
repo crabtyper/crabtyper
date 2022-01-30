@@ -1,9 +1,9 @@
 use yew::prelude::*;
 
 use crate::components::footer::Footer;
+use crate::components::game::Game;
 use crate::components::header::Header;
 use crate::components::pagelayout::PageLayout;
-use crate::components::vim::Vim;
 
 #[function_component(App)]
 pub fn app() -> Html {
@@ -13,7 +13,7 @@ pub fn app() -> Html {
                 <Header />
             </div>
             <main>
-                <Vim/>
+                <Game/>
             </main>
             <div class="mb-8">
                 <Footer />
