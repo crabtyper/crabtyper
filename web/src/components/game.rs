@@ -2,9 +2,8 @@ use std::cell::RefCell;
 use std::ops::Deref;
 use std::rc::Rc;
 
-use gloo::console::debug;
 use gloo::timers::callback::Interval;
-use reqwasm::http::{Request, Response};
+use reqwasm::http::Request;
 use yew::prelude::*;
 
 use crate::components::result::Result;
@@ -43,14 +42,13 @@ pub fn game() -> Html {
                             .await
                             .unwrap();
 
-                        debug!(format!("{:?}", snippet));
                         state.dispatch(Action::NewSnippet(snippet));
                     });
                 }
                 || ()
             }
         },
-        state.clone().status,
+        state.status,
     );
 
     use_effect_with_deps(
@@ -133,9 +131,10 @@ pub fn game() -> Html {
 
     let accuracy = {
         let tabs = state.text.chars().filter(|c| c == &'\t').count();
+        let chars = (state.text.len() + tabs) as f32;
 
         if state.mistakes > 0 {
-            (((state.text.len() + tabs) as f32 / state.mistakes as f32) * 100_f32) as u8
+            (100.0 - ((state.mistakes as f32 / chars) * 100.0)) as u8
         } else {
             100
         }
@@ -146,23 +145,30 @@ pub fn game() -> Html {
         let state = state.clone();
 
         Callback::from(move |e: KeyboardEvent| {
-            let key;
-            let key_string = e.key();
+            let mut key: Option<char> = None;
+            let key_string: String = e.key();
 
             if key_string == "Enter" {
-                key = '\n';
+                key = Some('\n');
             } else if key_string == "Tab" {
                 e.prevent_default();
-                key = '\t';
-            } else {
-                key = key_string.chars().next().unwrap();
+                key = Some('\t');
+            } else if key_string.len() == 1 {
+                key = key_string.chars().next();
             }
 
-            state.dispatch(Action::KeyPress(key));
-
-            if let Some(next) = next_char {
-                if key.to_string() == *cursor && next == '\n' {
-                    cursor.set("↵\n".to_string());
+            if let Some(k) = key {
+                if k.is_alphanumeric()
+                    || k.is_control()
+                    || k.is_whitespace()
+                    || k.is_ascii_punctuation()
+                {
+                    state.dispatch(Action::KeyPress(k));
+                    if let Some(next) = next_char {
+                        if k.to_string() == *cursor && next == '\n' {
+                            cursor.set("↵\n".to_string());
+                        }
+                    }
                 }
             }
         })
