@@ -34,7 +34,7 @@ impl Reducible for State {
                     index: self.index,
                     mistakes: self.mistakes,
                     status: self.status,
-                    language: snippet.language.clone(),
+                    language: snippet.language,
                 }
                 .into()
             }
@@ -65,6 +65,7 @@ impl Reducible for State {
                 } else {
                     mistakes += 1;
                 }
+
                 State {
                     text: self.text.clone(),
                     wrong_text: self.wrong_text.clone(),
