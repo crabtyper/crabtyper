@@ -2,7 +2,7 @@ use std::rc::Rc;
 
 use yew::prelude::*;
 
-use crate::constant::Status;
+use crate::{components::game::Snippet, constant::Status};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct State {
@@ -11,9 +11,11 @@ pub struct State {
     pub index: usize,
     pub mistakes: u8,
     pub status: Status,
+    pub language: String,
 }
 
 pub enum Action {
+    NewSnippet(Snippet),
     KeyPress(char),
     Reset,
 }
@@ -23,6 +25,19 @@ impl Reducible for State {
 
     fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
         match action {
+            Action::NewSnippet(snippet) => {
+                State::reset();
+
+                State {
+                    text: snippet.code.clone(),
+                    wrong_text: self.wrong_text.clone(),
+                    index: self.index,
+                    mistakes: self.mistakes,
+                    status: self.status,
+                    language: snippet.language.clone(),
+                }
+                .into()
+            }
             // TODO: clean this up
             Action::KeyPress(key) => {
                 let mut status = if self.status != Status::Passed {
@@ -56,6 +71,7 @@ impl Reducible for State {
                     index,
                     mistakes,
                     status,
+                    language: self.language.clone(),
                 }
                 .into()
             }
@@ -67,20 +83,12 @@ impl Reducible for State {
 impl State {
     pub fn reset() -> State {
         State {
-            text: "impl Default for FileFlags {
-\tfn default() -> Self {
-\tSelf {
-\t\tpublic: true,
-\t\tprotected: false,
-\t\tno_preview: false,
-\t\t}
-\t}
-}"
-            .to_string(),
+            text: "".to_string(),
             wrong_text: "".to_string(),
             index: 0,
             mistakes: 0,
             status: Status::Ready,
+            language: "".to_string(),
         }
     }
 }

@@ -1,0 +1,1 @@
+def print_output_wordoku(self):\n\tfor cell in self.assignment.keys():\n\t\trow,col = self.decode_cell(cell)\n\t\tself.wordoku[row][col] = self.assignment[cell]\n\tself.output_wordoku()\n

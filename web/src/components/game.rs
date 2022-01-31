@@ -4,12 +4,23 @@ use std::rc::Rc;
 
 use gloo::console::debug;
 use gloo::timers::callback::Interval;
+use reqwasm::http::{Request, Response};
 use yew::prelude::*;
 
 use crate::components::result::Result;
 use crate::components::vim::Vim;
 use crate::constant::Status;
 use crate::state::{Action, State};
+
+use serde::Deserialize;
+
+#[derive(Clone, PartialEq, Deserialize, Debug)]
+pub struct Snippet {
+    pub id: String,
+    pub code: String,
+    pub language_id: String,
+    pub language: String,
+}
 
 #[function_component(Game)]
 pub fn game() -> Html {
@@ -20,12 +31,38 @@ pub fn game() -> Html {
 
     use_effect_with_deps(
         {
+            let state = state.clone();
+            move |_| {
+                if state.status == Status::Ready {
+                    wasm_bindgen_futures::spawn_local(async move {
+                        let snippet: Snippet = Request::get("http://localhost:5000/api/snippet")
+                            .send()
+                            .await
+                            .unwrap()
+                            .json()
+                            .await
+                            .unwrap();
+
+                        debug!(format!("{:?}", snippet));
+                        state.dispatch(Action::NewSnippet(snippet));
+                    });
+                }
+                || ()
+            }
+        },
+        state.clone().status,
+    );
+
+    use_effect_with_deps(
+        {
             let cursor = cursor.clone();
             let state = state.clone();
 
             move |_| {
-                let current_char = state.text.chars().nth(state.index).unwrap();
-                cursor.set(current_char.to_string());
+                if state.text.len() > 1 {
+                    let current_char = state.text.chars().nth(state.index).unwrap();
+                    cursor.set(current_char.to_string());
+                }
                 || ()
             }
         },
@@ -56,7 +93,13 @@ pub fn game() -> Html {
 
     let typed_text = { state.text[..state.index].to_string() };
 
-    let remaining_text = { state.text[state.index + 1..].to_string() };
+    let remaining_text = {
+        if state.text.len() > 1 {
+            state.text[state.index + 1..].to_string()
+        } else {
+            "".to_string()
+        }
+    };
 
     let progress = {
         let progress = (((state.index + 1) as f64 / state.text.len() as f64) * 100.0).floor();
@@ -67,7 +110,7 @@ pub fn game() -> Html {
         }
     };
 
-    let lines = { state.text.split('\n').count() };
+    let lines = { state.text.split('\n').count() - 1 };
 
     let time = {
         let time = *sec_past;
@@ -154,7 +197,7 @@ pub fn game() -> Html {
                     {time}
                     {wpm}
                     {lines}
-                    lang={"Rust"}
+                    lang={state.language.clone()}
                 />
             }
         </>

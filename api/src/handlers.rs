@@ -56,3 +56,15 @@ pub async fn add_snippet(
         .map(|snippet| HttpResponse::Ok().json(snippet))
         .map_err(|_| HttpResponse::InternalServerError())?)
 }
+
+pub async fn delete_snippet(
+    db: web::Data<Pool>,
+    snippet_id: web::Path<String>,
+) -> Result<HttpResponse, Error> {
+    Ok(
+        web::block(move || db::delete_single_snippet(db, snippet_id.into_inner()))
+            .await
+            .map(|user| HttpResponse::Ok().json(user))
+            .map_err(|_| HttpResponse::InternalServerError())?,
+    )
+}

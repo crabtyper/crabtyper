@@ -1,0 +1,5 @@
+def print_output_wordoku(self):
+	for cell in self.assignment.keys():
+		row,col = self.decode_cell(cell)
+		self.wordoku[row][col] = self.assignment[cell]
+	self.output_wordoku()

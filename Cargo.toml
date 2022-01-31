@@ -3,4 +3,5 @@
 members = [
   "web",
   "api",
+  "parser",
 ]

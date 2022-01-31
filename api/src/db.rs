@@ -1,7 +1,7 @@
 use super::schema::languages::dsl::*;
 use super::schema::snippets::dsl::*;
 use super::Pool;
-use super::{models::Language, schema::languages};
+use super::{models::Language, schema::languages, schema::snippets};
 use crate::diesel::QueryDsl;
 use crate::models::{InputSnippet, Snippet};
 use crate::schema::random;
@@ -10,7 +10,7 @@ use crate::{
     models::{InputLanguage, SnippetView},
 };
 use actix_web::web;
-use diesel::dsl::insert_into;
+use diesel::dsl::{delete, insert_into};
 use diesel::prelude::*;
 use std::vec::Vec;
 
@@ -77,7 +77,7 @@ pub fn get_single_random_snippet(
 
     let item = snippets
         .inner_join(languages)
-        .select((languages::id, code, language_id, languages::name))
+        .select((snippets::id, code, language_id, languages::name))
         .order_by(random)
         .limit(1)
         .first::<SnippetView>(&conn)?;
@@ -93,7 +93,7 @@ pub fn get_single_random_snippet_by_lang(
 
     let snippet = snippets
         .inner_join(languages)
-        .select((languages::id, code, language_id, languages::name))
+        .select((snippets::id, code, language_id, languages::name))
         .filter(languages::name.eq(language))
         .order_by(random)
         .limit(1)
@@ -107,8 +107,18 @@ pub fn get_all_snippets(pool: web::Data<Pool>) -> Result<Vec<SnippetView>, diese
 
     let items = snippets
         .inner_join(languages)
-        .select((languages::id, code, language_id, languages::name))
+        .select((snippets::id, code, language_id, languages::name))
         .load::<SnippetView>(&conn)?;
 
     Ok(items)
+}
+
+pub fn delete_single_snippet(
+    db: web::Data<Pool>,
+    snippet_id: String,
+) -> Result<usize, diesel::result::Error> {
+    let conn = db.get().unwrap();
+    let count = delete(snippets.find(snippet_id)).execute(&conn)?;
+    dbg!(format!("Deleting snippet: {count}"));
+    Ok(count)
 }

@@ -12,3 +12,7 @@ wasm-bindgen = "0.2.79"
 web-sys = "0.3.56"
 gloo = "0.6.0"
 yew = "0.19"
+reqwasm = "0.4.0"
+wasm-bindgen-futures = "0.4.29"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
