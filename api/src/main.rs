@@ -30,13 +30,19 @@ pub async fn main() -> std::io::Result<()> {
         .expect("Failed  to create pool");
 
     HttpServer::new(move || {
-        App::new()
-            .data(pool.clone())
-            .route("/languages", web::get().to(handlers::get_languages))
-            .route("/languages", web::post().to(handlers::add_language))
-            // .route("/snippet/{lang}", web::get().to(handlers::get_snippet))
-            .route("/snippet/random", web::get().to(handlers::get_snippet))
-            .route("/snippet", web::post().to(handlers::add_snippet))
+        App::new().data(pool.clone()).service(
+            web::scope("/api")
+                .route("/languages", web::get().to(handlers::get_languages))
+                .route("/languages", web::post().to(handlers::add_language))
+                .route("/snippets", web::get().to(handlers::get_snippets))
+                // .route("/snippets", web::post().to(|| HttpResonse::ok()))
+                .route("/snippet", web::get().to(handlers::get_random_snippet))
+                .route("/snippet", web::post().to(handlers::add_snippet))
+                .route(
+                    "/snippet/{language}",
+                    web::get().to(handlers::get_random_snippet_by_lang),
+                ),
+        )
     })
     .bind("127.0.0.1:5000")?
     .run()

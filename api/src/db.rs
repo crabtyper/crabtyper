@@ -1,72 +1,114 @@
-use diesel::connection::SimpleConnection;
+use super::schema::languages::dsl::*;
+use super::schema::snippets::dsl::*;
+use super::Pool;
+use super::{models::Language, schema::languages};
+use crate::diesel::QueryDsl;
+use crate::models::{InputSnippet, Snippet};
+use crate::schema::random;
+use crate::{
+    diesel::RunQueryDsl,
+    models::{InputLanguage, SnippetView},
+};
+use actix_web::web;
+use diesel::dsl::insert_into;
 use diesel::prelude::*;
-use diesel::r2d2::{ConnectionManager, Pool};
-use diesel::SqliteConnection;
-use dotenv::dotenv;
-use std::env;
-use std::result::Result;
-use std::time::Duration;
-use uuid::Uuid;
+use std::vec::Vec;
 
-pub use crate::models;
-use crate::models::Snippet;
-pub use crate::schema;
+pub fn get_all_languages(pool: web::Data<Pool>) -> Result<Vec<Language>, diesel::result::Error> {
+    let conn = pool.get().unwrap();
+    let items = languages.load::<Language>(&conn)?;
 
-#[derive(Debug)]
-pub struct ConnectionOptions {
-    pub enable_wal: bool,
-    pub enable_foreign_keys: bool,
-    pub busy_timeout: Option<Duration>,
+    Ok(items)
 }
 
-impl diesel::r2d2::CustomizeConnection<SqliteConnection, diesel::r2d2::Error>
-    for ConnectionOptions
-{
-    fn on_acquire(&self, conn: &mut SqliteConnection) -> Result<(), diesel::r2d2::Error> {
-        (|| {
-            if self.enable_wal {
-                conn.batch_execute("PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL;")?;
-            }
-            if self.enable_foreign_keys {
-                conn.batch_execute("PRAGMA foreign_keys = ON;")?;
-            }
-            if let Some(d) = self.busy_timeout {
-                conn.batch_execute(&format!("PRAGMA busy_timeout = {};", d.as_millis()))?;
-            }
-            Ok(())
-        })()
-        .map_err(diesel::r2d2::Error::QueryError)
+pub fn add_single_language(
+    db: web::Data<Pool>,
+    item: web::Json<InputLanguage>,
+) -> Result<Language, String> {
+    let conn = db.get().unwrap();
+
+    let new_lang = Language {
+        id: uuid::Uuid::new_v4().to_string(),
+        name: item.name.to_string(),
+    };
+
+    let result = insert_into(languages).values(&new_lang).execute(&conn);
+
+    match result {
+        Ok(_) => Ok(new_lang),
+        Err(e) => Err(format!("Can't create a new language: {:?}", e)),
     }
 }
 
-pub fn create_conn_pool() -> Pool<ConnectionManager<SqliteConnection>> {
-    dotenv().ok();
-    let db_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    Pool::builder()
-        .max_size(16)
-        .connection_customizer(Box::new(ConnectionOptions {
-            enable_wal: true,
-            enable_foreign_keys: true,
-            busy_timeout: Some(Duration::from_secs(30)),
-        }))
-        .build(ConnectionManager::<SqliteConnection>::new(db_url))
-        .unwrap()
+pub fn add_single_snippet(
+    db: web::Data<Pool>,
+    item: web::Json<InputSnippet>,
+) -> Result<SnippetView, String> {
+    let conn = db.get().unwrap();
+
+    let lang = languages
+        .filter(languages::name.eq(&item.language))
+        .first::<Language>(&conn)
+        .unwrap();
+
+    let new_snippet = Snippet {
+        id: uuid::Uuid::new_v4().to_string(),
+        code: item.code.clone(),
+        language_id: lang.id,
+    };
+
+    let result = insert_into(snippets).values(&new_snippet).execute(&conn);
+
+    match result {
+        Ok(_) => Ok(SnippetView {
+            id: new_snippet.id,
+            code: new_snippet.code,
+            language_id: new_snippet.language_id,
+            language: lang.name,
+        }),
+        Err(e) => Err(format!("Can't create a new snippet: {:?}", e)),
+    }
 }
 
-pub fn establish_connection() -> SqliteConnection {
-    dotenv().ok();
+pub fn get_single_random_snippet(
+    pool: web::Data<Pool>,
+) -> Result<SnippetView, diesel::result::Error> {
+    let conn = pool.get().unwrap();
 
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    SqliteConnection::establish(&database_url)
-        .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
+    let item = snippets
+        .inner_join(languages)
+        .select((languages::id, code, language_id, languages::name))
+        .order_by(random)
+        .limit(1)
+        .first::<SnippetView>(&conn)?;
+
+    Ok(item)
 }
 
-// pub fn create_new_snippet(code: &str, lang: &str, conn: &SqliteConnection) -> Result<Uuid, String> {
-//     let new_snippet_id = Uuid::new_v4();
-//
-//     let new_snippet = Snippet {
-//         id: new_snippet_id.to_string(),
-//         code: code.to_owned(),
-//         language: lang.to_owned(),
-//     };
-// }
+pub fn get_single_random_snippet_by_lang(
+    pool: web::Data<Pool>,
+    language: String,
+) -> Result<SnippetView, diesel::result::Error> {
+    let conn = pool.get().unwrap();
+
+    let snippet = snippets
+        .inner_join(languages)
+        .select((languages::id, code, language_id, languages::name))
+        .filter(languages::name.eq(language))
+        .order_by(random)
+        .limit(1)
+        .first::<SnippetView>(&conn)?;
+
+    Ok(snippet)
+}
+
+pub fn get_all_snippets(pool: web::Data<Pool>) -> Result<Vec<SnippetView>, diesel::result::Error> {
+    let conn = pool.get().unwrap();
+
+    let items = snippets
+        .inner_join(languages)
+        .select((languages::id, code, language_id, languages::name))
+        .load::<SnippetView>(&conn)?;
+
+    Ok(items)
+}
