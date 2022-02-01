@@ -1,18 +1,16 @@
-use super::schema::languages::dsl::*;
-use super::schema::snippets::dsl::*;
 use super::Pool;
-use super::{models::Language, schema::languages, schema::snippets};
-use crate::diesel::QueryDsl;
-use crate::models::{InputSnippet, Snippet};
+use crate::models::{InputLanguage, InputSnippet, Language, Snippet, SnippetView};
+use crate::schema::languages;
+use crate::schema::languages::dsl::*;
 use crate::schema::random;
-use crate::{
-    diesel::RunQueryDsl,
-    models::{InputLanguage, SnippetView},
-};
+use crate::schema::snippets;
+use crate::schema::snippets::dsl::*;
+
 use actix_web::web;
 use diesel::dsl::{delete, insert_into};
 use diesel::prelude::*;
 use std::vec::Vec;
+use uuid::Uuid;
 
 pub fn get_all_languages(pool: web::Data<Pool>) -> Result<Vec<Language>, diesel::result::Error> {
     let conn = pool.get().unwrap();
@@ -28,7 +26,7 @@ pub fn add_single_language(
     let conn = db.get().unwrap();
 
     let new_lang = Language {
-        id: uuid::Uuid::new_v4().to_string(),
+        id: Uuid::new_v4().to_string(),
         name: item.name.to_string(),
     };
 
@@ -47,12 +45,12 @@ pub fn add_single_snippet(
     let conn = db.get().unwrap();
 
     let lang = languages
-        .filter(languages::name.eq(&item.language))
+        .filter(name.eq(&item.language))
         .first::<Language>(&conn)
         .unwrap();
 
     let new_snippet = Snippet {
-        id: uuid::Uuid::new_v4().to_string(),
+        id: Uuid::new_v4().to_string(),
         code: item.code.clone(),
         language_id: lang.id,
     };
@@ -118,7 +116,8 @@ pub fn delete_single_snippet(
     snippet_id: String,
 ) -> Result<usize, diesel::result::Error> {
     let conn = db.get().unwrap();
+
     let count = delete(snippets.find(snippet_id)).execute(&conn)?;
-    dbg!(format!("Deleting snippet: {count}"));
+
     Ok(count)
 }
