@@ -1,4 +1,4 @@
-use gloo::{console::debug, events::EventListener};
+use gloo::events::EventListener;
 use wasm_bindgen::JsCast;
 use yew::prelude::*;
 
