@@ -9,17 +9,18 @@
 
 ### API
 
-- [ ] setup db
-- [ ] create scheme
-- [ ] GET random snippet
+- [x] setup db
+- [x] create scheme
+- [x] CRUD snippets / languages
 
 ### WEB
 
-- [ ] fix mistakes bug
-- [ ] get random language from API
+- [x] fix mistakes bug
+- [x] get random language from API
+- [x] accuracy
+- [x] results
+- [ ] show wrong typed text
 - [ ] blinking cursor
 - [ ] style statusline
 - [ ] refactor state
-- [ ] accuracy, combos
-- [ ] results
 - [ ] syntax highlighting
