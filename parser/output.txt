@@ -1,1 +1,1 @@
-def print_output_wordoku(self):\n\tfor cell in self.assignment.keys():\n\t\trow,col = self.decode_cell(cell)\n\t\tself.wordoku[row][col] = self.assignment[cell]\n\tself.output_wordoku()\n
+assert!(if let Ok(c) = config {\n\t\tc == TestConfig {\n\t\t\ta: \"test\".into(),\n\t\t\tb: \"test\".into(),\n\t\t}\n\t} else {\n\t\tfalse\n\t})\n

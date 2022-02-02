@@ -1,0 +1,4 @@
+{
+  "language": "Rust",
+  "code": "assert!(if let Ok(c) = config {\n\t\tc == TestConfig {\n\t\t\ta: \"test\".into(),\n\t\t\tb: \"test\".into(),\n\t\t}\n\t} else {\n\t\tfalse\n\t})"
+}
