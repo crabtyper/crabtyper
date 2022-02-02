@@ -150,6 +150,72 @@ curl -S http://localhost:5000/api/snippets
 
 </details>
 
+#### `POST /api/snippet`
+
+Inserts a new snippet into the SQLite DB.
+
+Provide a JSON payload with a name. Eg:
+
+```json
+{
+  "language": "Rust",
+  "code": "assert!(if let Ok(c) = config {\n\t\tc == TestConfig {\n\t\t\ta: \"test\".into(),\n\t\t\tb: \"test\".into(),\n\t\t}\n\t} else {\n\t\tfalse\n\t})"
+}
+```
+
+On success, a response like the following is returned:
+
+```json
+{
+  "id": "9e46baba-a001-4bb3-b4cf-4b3e5bab5e97",
+  "code": "assert!(if let Ok(c) = config {\n\t\tc == TestConfig {\n\t\t\ta: \"test\".into(),\n\t\t\tb: \"test\".into(),\n\t\t}\n\t} else {\n\t\tfalse\n\t})",
+  "language": "Rust",
+  "language_id": "9e46baba-a001-4bb3-b4cf-4b3e5bab5e97"
+}
+```
+
+#### `GET /api/snippet`
+
+Gets a random snippet from the DB.
+
+<details>
+  <summary>Client Examples</summary>
+
+Using [HTTPie](https://httpie.org/):
+
+```sh
+http localhost:5000/api/snippet
+```
+
+Using cURL:
+
+```sh
+curl -S http://localhost:5000/api/snippet
+```
+
+</details>
+
+#### `GET /api/snippet/{language}`
+
+Gets a random snippet by language from the DB.
+
+<details>
+  <summary>Client Examples</summary>
+
+Using [HTTPie](https://httpie.org/):
+
+```sh
+http localhost:5000/api/snippet/Rust
+```
+
+Using cURL:
+
+```sh
+curl -S http://localhost:5000/api/snippet/Rust
+```
+
+</details>
+
 ### Explore The SQLite DB
 
 ```sh
