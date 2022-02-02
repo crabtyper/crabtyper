@@ -63,10 +63,10 @@ brew install sqlite3
 #### Initialize SQLite Database
 
 ```sh
-cd examples/diesel
+cd api
 cargo install diesel_cli --no-default-features --features sqlite
 
-echo "DATABASE_URL=test.db" > .env
+echo "DATABASE_URL=snippets.db" > .env
 diesel migration run
 ```
 
