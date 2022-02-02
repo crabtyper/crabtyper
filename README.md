@@ -5,23 +5,26 @@
   </p>
 </div>
 
-# Usage
+## Usage
 
-Surf to `localhost:8080`. Click on the text & start typing!
-After you typed the code snippet you will see your result with your wpm, time, accuracy & mistakes.
+Surf to `localhost:8080`. 
+
+Click on the text & start typing!
+
+After you typed the code snippet you will see your result with your wpm, time, accuracy & mistakes.\
 Then just press `r` to restart the game!
 
-# Installation Guide
+## Installation Guide
 
-## Web
+### Web
 
-### Install Rust
+#### Install Rust
 
 ```sh
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-### Install yew
+#### Install yew
 
 ```sh
 # Install trunk
@@ -31,7 +34,7 @@ cargo install --locked trunk
 rustup target add wasm32-unknown-unknown
 ```
 
-### Start the development server
+#### Start the development server
 
 ```sh
 cd web/
@@ -39,9 +42,9 @@ cd web/
 trunk serve --open
 ```
 
-## API
+### API
 
-### Install SQLite
+#### Install SQLite
 
 ```sh
 # on OpenSUSE
@@ -57,7 +60,7 @@ sudo dnf install libsqlite3x-devel sqlite3x
 brew install sqlite3
 ```
 
-### Initialize SQLite Database
+#### Initialize SQLite Database
 
 ```sh
 cd examples/diesel
@@ -67,7 +70,7 @@ echo "DATABASE_URL=test.db" > .env
 diesel migration run
 ```
 
-### Running Server
+#### Running Server
 
 ```sh
 cd api
@@ -76,9 +79,9 @@ cargo run (or ``cargo watch -x run``)
 # Started http server: 127.0.0.1:5000
 ```
 
-### Available Routes
+#### Available Routes
 
-#### `POST /api/languages`
+##### `POST /api/languages`
 
 Inserts a new language into the SQLite DB.
 
@@ -114,7 +117,7 @@ curl -S -X POST --header "Content-Type: application/json" --data '{"name":"Rust"
 
 </details>
 
-#### `GET /api/languages`
+##### `GET /api/languages`
 
 Gets all languages from the DB.
 
@@ -135,7 +138,7 @@ curl -S http://localhost:5000/api/languages
 
 </details>
 
-#### `GET /api/snippets`
+##### `GET /api/snippets`
 
 Gets all snippets from the DB.
 
@@ -156,7 +159,7 @@ curl -S http://localhost:5000/api/snippets
 
 </details>
 
-#### `POST /api/snippet`
+##### `POST /api/snippet`
 
 Inserts a new snippet into the SQLite DB.
 
@@ -180,7 +183,7 @@ On success, a response like the following is returned:
 }
 ```
 
-#### `GET /api/snippet`
+##### `GET /api/snippet`
 
 Gets a random snippet from the DB.
 
@@ -201,7 +204,7 @@ curl -S http://localhost:5000/api/snippet
 
 </details>
 
-#### `GET /api/snippet/{language}`
+##### `GET /api/snippet/{language}`
 
 Gets a random snippet by language from the DB.
 
@@ -222,7 +225,7 @@ curl -S http://localhost:5000/api/snippet/Rust
 
 </details>
 
-### Explore The SQLite DB
+#### Explore The SQLite DB
 
 ```sh
 sqlite3 test.db
