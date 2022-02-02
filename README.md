@@ -7,6 +7,12 @@
 
 # Usage
 
+Surf to `localhost:8080`. Click on the text & start typing!
+After you typed the code snippet you will see your result with your wpm, time, accuracy & mistakes.
+Then just press `r` to restart the game!
+
+# Installation Guide
+
 ## Web
 
 ### Install Rust
