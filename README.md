@@ -5,6 +5,8 @@
   </p>
 </div>
 
+![demo](./media/demo.gif)
+
 ## Usage
 
 Surf to `localhost:8080`. 
