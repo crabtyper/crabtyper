@@ -9,7 +9,8 @@ use yew::prelude::*;
 use crate::components::result::Result;
 use crate::components::vim::Vim;
 use crate::constant::Status;
-use crate::state::{Action, State};
+
+use crate::context::gamestate_ctx::{GameStateContext, Action};
 
 use serde::Deserialize;
 
@@ -23,7 +24,8 @@ pub struct Snippet {
 
 #[function_component(Game)]
 pub fn game() -> Html {
-    let state = use_reducer_eq(State::reset);
+    let state = use_context::<GameStateContext>().unwrap();
+
     let cursor = use_state(|| "".to_string());
     let sec_past = use_state(|| 0_u32);
     let timer: Rc<RefCell<Option<Interval>>> = use_mut_ref(|| None);

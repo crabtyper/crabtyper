@@ -1,11 +1,11 @@
 use std::rc::Rc;
 
-use yew::prelude::*;
-
 use crate::{components::game::Snippet, constant::Status};
 
+use yew::prelude::*;
+
 #[derive(Clone, Debug, PartialEq)]
-pub struct State {
+pub struct GameState {
     pub text: String,
     pub wrong_text: String,
     pub index: usize,
@@ -20,15 +20,15 @@ pub enum Action {
     Reset,
 }
 
-impl Reducible for State {
+impl Reducible for GameState {
     type Action = Action;
 
     fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
         match action {
             Action::NewSnippet(snippet) => {
-                State::reset();
+                GameState::reset();
 
-                State {
+                GameState {
                     text: snippet.code.clone(),
                     wrong_text: self.wrong_text.clone(),
                     index: self.index,
@@ -66,7 +66,7 @@ impl Reducible for State {
                     mistakes += 1;
                 }
 
-                State {
+                GameState {
                     text: self.text.clone(),
                     wrong_text: self.wrong_text.clone(),
                     index,
@@ -76,14 +76,14 @@ impl Reducible for State {
                 }
                 .into()
             }
-            Action::Reset => State::reset().into(),
+            Action::Reset => GameState::reset().into(),
         }
     }
 }
 
-impl State {
-    pub fn reset() -> State {
-        State {
+impl GameState {
+    pub fn reset() -> GameState {
+        GameState {
             text: "".to_string(),
             wrong_text: "".to_string(),
             index: 0,
@@ -91,5 +91,24 @@ impl State {
             status: Status::Ready,
             language: "".to_string(),
         }
+    }
+}
+
+pub type GameStateContext = UseReducerHandle<GameState>;
+
+#[derive(Properties, Debug, PartialEq)]
+pub struct GameStateProviderProps {
+    #[prop_or_default]
+    pub children: Children,
+}
+
+#[function_component(GameStateProvider)]
+pub fn gameStateProvider(props: &GameStateProviderProps) -> Html {
+    let state = use_reducer(GameState::reset);
+
+    html! {
+        <ContextProvider<GameStateContext> context={state}>
+            {props.children.clone()}
+        </ContextProvider<GameStateContext>>
     }
 }

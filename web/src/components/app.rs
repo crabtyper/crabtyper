@@ -5,6 +5,8 @@ use crate::components::game::Game;
 use crate::components::header::Header;
 use crate::components::pagelayout::PageLayout;
 
+use crate::context::gamestate_ctx::GameStateProvider;
+
 #[function_component(App)]
 pub fn app() -> Html {
     html! {
@@ -13,7 +15,9 @@ pub fn app() -> Html {
                 <Header />
             </div>
             <main>
-                <Game/>
+                <GameStateProvider>
+                    <Game/>
+                </GameStateProvider>
             </main>
             <div class="mb-8">
                 <Footer />
