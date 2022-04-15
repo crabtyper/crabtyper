@@ -102,18 +102,25 @@ impl Reducible for GameState {
 
                 if !wrong.is_empty() {
                     if let Some(next) = cursor {
-                        remaining = format!("{}{}", next, remaining);
+                        if next == '❚' {
+                            remaining = format!("{}{}", ' ', remaining);
+                        } else {
+                            remaining = format!("{}{}", next, remaining);
+                        }
                     }
 
                     cursor = wrong.pop();
-
-                    if cursor == Some('\t') {
-                        while cursor == Some('\t') {
-                            if let Some(next) = cursor {
-                                remaining = format!("{}{}", next, remaining);
-                            }
-                            cursor = wrong.pop();
+                    if let Some(c) = cursor {
+                        if c == '❚' {
+                            cursor = Some(' ')
                         }
+                    }
+
+                    while cursor == Some('\t') {
+                        if let Some(next) = cursor {
+                            remaining = format!("{}{}", next, remaining);
+                        }
+                        cursor = wrong.pop();
                     }
                 }
 
@@ -168,7 +175,11 @@ impl Reducible for GameState {
                         mistakes += 1;
 
                         if let Some(next) = cursor {
-                            wrong.push(next);
+                            if next == ' ' {
+                                wrong.push('❚');
+                            } else {
+                                wrong.push(next);
+                            }
                         }
 
                         cursor = chars.next();
