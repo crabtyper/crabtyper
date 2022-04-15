@@ -13,7 +13,6 @@ use yew::prelude::*;
 pub struct Text {
     pub lines: usize,
     pub cursor: Option<char>,
-    pub special_char: Option<String>,
     pub remaining: String,
     pub correct: String,
     pub wrong: String,
@@ -100,11 +99,8 @@ impl Reducible for GameState {
                 let mut wrong = self.text.wrong.clone();
                 let mut remaining = self.text.remaining.clone();
                 let mut cursor = self.text.cursor;
-                let mut special_char = self.text.special_char.clone();
 
                 if !wrong.is_empty() {
-                    special_char = None;
-
                     if let Some(next) = cursor {
                         remaining = format!("{}{}", next, remaining);
                     }
@@ -126,7 +122,6 @@ impl Reducible for GameState {
                 GameState {
                     text: Text {
                         cursor,
-                        special_char,
                         wrong,
                         remaining,
                         ..state.text
@@ -145,7 +140,6 @@ impl Reducible for GameState {
                 };
 
                 let mut cursor = self.text.cursor;
-                let mut special_char = self.text.special_char.clone();
                 let mut remaining = self.text.remaining.clone();
                 let mut correct = self.text.correct.clone();
                 let mut wrong = self.text.wrong.clone();
@@ -160,7 +154,6 @@ impl Reducible for GameState {
                         correct.push(key);
 
                         cursor = chars.next();
-                        special_char = None;
 
                         if remaining.is_empty() {
                             accuracy = calculate_accuracy(&correct, &remaining, mistakes);
@@ -179,7 +172,6 @@ impl Reducible for GameState {
                         }
 
                         cursor = chars.next();
-                        special_char = None;
 
                         while cursor == Some('\t') {
                             wrong.push('\t');
@@ -196,7 +188,6 @@ impl Reducible for GameState {
                 GameState {
                     text: Text {
                         cursor,
-                        special_char,
                         remaining,
                         wrong,
                         correct,
