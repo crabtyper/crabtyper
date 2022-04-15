@@ -165,11 +165,11 @@ impl Reducible for GameState {
                         if remaining.is_empty() {
                             accuracy = calculate_accuracy(&correct, &remaining, mistakes);
                             status = Status::Passed;
-                        } else if cursor == Some('\t') {
-                            while cursor == Some('\t') {
-                                correct.push('\t');
-                                cursor = chars.next();
-                            }
+                        }
+
+                        while cursor == Some('\t') {
+                            correct.push('\t');
+                            cursor = chars.next();
                         }
                     } else if wrong.len() < 10 {
                         mistakes += 1;
@@ -181,11 +181,9 @@ impl Reducible for GameState {
                         cursor = chars.next();
                         special_char = None;
 
-                        if cursor == Some('\t') {
-                            while cursor == Some('\t') {
-                                wrong.push('\t');
-                                cursor = chars.next();
-                            }
+                        while cursor == Some('\t') {
+                            wrong.push('\t');
+                            cursor = chars.next();
                         }
                     }
                 }
