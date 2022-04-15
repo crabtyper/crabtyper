@@ -6,3 +6,9 @@ pub enum Status {
     Playing,
     Passed,
 }
+
+impl Default for Status {
+    fn default() -> Self {
+        Status::Ready
+    }
+}
