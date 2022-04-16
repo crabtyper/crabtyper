@@ -47,8 +47,6 @@ impl Reducer<GameState> for Action {
             Action::NewSnippet(snippet) => {
                 *state = GameState::reset();
 
-                gloo::console::log!("Reset");
-
                 let mut chars = snippet.code.chars();
 
                 state.text.cursor = chars.next();
