@@ -1,10 +1,11 @@
 use yew::prelude::*;
+use yewdux::prelude::use_store;
 
-use crate::{constant::Status, context::gamestate_ctx::GameStateContext};
+use crate::{constant::Status, state::GameState};
 
 #[function_component(Statusline)]
 pub fn statusline() -> Html {
-    let state = use_context::<GameStateContext>().unwrap();
+    let (state, dispatch) = use_store::<GameState>();
 
     let mode = {
         if state.status == Status::Playing {

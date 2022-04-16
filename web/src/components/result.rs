@@ -1,25 +1,21 @@
-use crate::context::gamestate_ctx::GameStateContext;
 use gloo::events::EventListener;
 use wasm_bindgen::JsCast;
 use yew::prelude::*;
+use yewdux::prelude::use_store;
 
-#[derive(Properties, PartialEq)]
-pub struct ResultProps {
-    pub on_reset: Callback<bool>,
-}
+use crate::state::{Action, GameState};
 
-#[function_component(Result)]
-pub fn result(props: &ResultProps) -> Html {
-    let state = use_context::<GameStateContext>().unwrap();
+#[function_component]
+pub fn Result() -> Html {
+    let (state, dispatch) = use_store::<GameState>();
 
     use_effect({
-        let on_reset = props.on_reset.clone();
         move || {
             let document = gloo::utils::document();
             let listener = EventListener::new(&document, "keydown", move |event| {
                 let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap();
                 if event.key() == "r" {
-                    on_reset.emit(true);
+                    dispatch.apply(Action::Reset);
                 }
             });
             || drop(listener)

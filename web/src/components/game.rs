@@ -1,11 +1,15 @@
+use std::cell::RefCell;
+use std::rc::Rc;
+
+use gloo::timers::callback::Interval;
 use reqwasm::http::Request;
 use yew::prelude::*;
+use yewdux::prelude::use_store;
 
 use crate::components::result::Result;
 use crate::components::vim::Vim;
 use crate::constant::Status;
-
-use crate::context::gamestate_ctx::{GameStateContext, Action};
+use crate::state::{GameState, Action};
 
 use serde::Deserialize;
 
@@ -17,26 +21,38 @@ pub struct Snippet {
     pub language: String,
 }
 
-#[function_component(Game)]
-pub fn game() -> Html {
-    let state = use_context::<GameStateContext>().unwrap();
+#[function_component]
+pub fn Game() -> Html {
+    let (state, dispatch) = use_store::<GameState>();
+    let timer: Rc<RefCell<Option<Interval>>> = use_mut_ref(|| None);
 
     use_effect_with_deps(
         {
             let state = state.clone();
-            move |_| {
-                if state.status == Status::Ready {
-                    wasm_bindgen_futures::spawn_local(async move {
-                        let snippet: Snippet = Request::get("http://localhost:5000/api/snippet")
-                            .send()
-                            .await
-                            .unwrap()
-                            .json()
-                            .await
-                            .unwrap();
 
-                        state.dispatch(Action::NewSnippet(snippet));
-                    });
+            move |_| {
+                match state.status {
+                    Status::Ready => {
+                        wasm_bindgen_futures::spawn_local(async move {
+                            let snippet: Snippet = Request::get("http://localhost:5000/api/snippet")
+                                .send()
+                                .await
+                                .unwrap()
+                                .json()
+                                .await
+                                .unwrap();
+
+                            dispatch.apply(Action::NewSnippet(snippet));
+                        })
+                    }
+                    Status::Playing => {
+                        *timer.borrow_mut() = Some(Interval::new(1000, move || {
+                            dispatch.apply(Action::Tick);
+                        }));
+                    }
+                    Status::Passed => {
+                        *timer.borrow_mut() = None;
+                    }
                 }
                 || ()
             }
@@ -44,50 +60,12 @@ pub fn game() -> Html {
         state.status,
     );
 
-    let on_key_press = {
-        let state = state.clone();
-
-        Callback::from(move |e: KeyboardEvent| {
-            let mut key: Option<char> = None;
-            let key_string: String = e.key();
-
-            if key_string == "Enter" {
-                key = Some('\n');
-            } else if key_string == "Tab" {
-                e.prevent_default();
-                key = Some('\t');
-            } else if key_string == "Backspace" && !state.text.wrong.is_empty() {
-                state.dispatch(Action::BackSpace)
-            } else if key_string.len() == 1 {
-                key = key_string.chars().next();
-            }
-
-
-            if let Some(k) = key {
-                if k.is_alphanumeric()
-                    || k.is_control()
-                    || k.is_whitespace()
-                    || k.is_ascii_punctuation()
-                {
-                    state.dispatch(Action::KeyPress(k));
-                }
-            }
-        })
-    };
-
-    let on_reset = {
-        let state = state.clone();
-        Callback::from(move |_| {
-            state.dispatch(Action::Reset);
-        })
-    };
-
     html! {
         <>
             if state.status == Status::Passed {
-                <Result {on_reset} />
+                <Result />
             } else {
-                <Vim {on_key_press} />
+                <Vim />
             }
         </>
     }

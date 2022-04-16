@@ -1,10 +1,10 @@
 mod components;
 mod constant;
-mod context;
+mod state;
 mod utils;
 
 use crate::components::app::App;
 
 fn main() {
-    yew::start_app::<App>();
+    yew::Renderer::<App>::new().render();
 }

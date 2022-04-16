@@ -1,26 +1,15 @@
-use crate::{components::linenumber::LineNumber, context::gamestate_ctx::GameStateContext};
+use crate::{
+    components::linenumber::LineNumber,
+    state::{Action, GameState},
+};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
+use yewdux::prelude::use_store;
 
-#[derive(Properties, PartialEq)]
-pub struct WindowProps {
-    pub on_key_press: Callback<KeyboardEvent>,
-}
-
-#[function_component(Window)]
-pub fn window(props: &WindowProps) -> Html {
-    let state = use_context::<GameStateContext>().unwrap();
-
+#[function_component]
+pub fn Window() -> Html {
+    let (state, dispatch) = use_store::<GameState>();
     let input_ref = use_node_ref();
-
-    let onclick = {
-        let input_ref = input_ref.clone();
-
-        Callback::from(move |_| {
-            let input = input_ref.cast::<HtmlInputElement>().unwrap();
-            input.focus().unwrap();
-        })
-    };
 
     use_effect_with_deps(
         {
@@ -33,6 +22,44 @@ pub fn window(props: &WindowProps) -> Html {
         },
         (),
     );
+
+    let onclick = {
+        let input_ref = input_ref.clone();
+
+        Callback::from(move |_| {
+            let input = input_ref.cast::<HtmlInputElement>().unwrap();
+            input.focus().unwrap();
+        })
+    };
+
+    let onkeydown = {
+        let state = state.clone();
+
+        Callback::from(move |e: KeyboardEvent| {
+            let mut key: Option<char> = None;
+            let key_string: String = e.key();
+            if key_string == "Enter" {
+                key = Some('\n');
+            } else if key_string == "Tab" {
+                e.prevent_default();
+                key = Some('\t');
+            } else if key_string == "Backspace" && !state.text.wrong.is_empty() {
+                dispatch.apply(Action::BackSpace)
+            } else if key_string.len() == 1 {
+                key = key_string.chars().next();
+            }
+
+            if let Some(k) = key {
+                if k.is_alphanumeric()
+                    || k.is_control()
+                    || k.is_whitespace()
+                    || k.is_ascii_punctuation()
+                {
+                    dispatch.apply(Action::KeyPress(k));
+                }
+            }
+        })
+    };
 
     let cursor = {
         if let Some(next) = state.text.cursor {
@@ -57,7 +84,7 @@ pub fn window(props: &WindowProps) -> Html {
                     <code class="text-white">{state.text.remaining.clone()}</code>
                     <input
                         ref={input_ref}
-                        onkeydown={props.on_key_press.clone()}
+                        {onkeydown}
                         class="text-white"
                         autocomplete="off"
                         type="text"

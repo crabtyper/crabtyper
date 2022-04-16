@@ -1,7 +1,7 @@
 use yew::prelude::*;
 
-#[function_component(Header)]
-pub fn header() -> Html {
+#[function_component]
+pub fn Header() -> Html {
     html! {
         <header class="flex flex-row justify-between font-bold">
             <a href="#">{"CrabTyper"}</a>
