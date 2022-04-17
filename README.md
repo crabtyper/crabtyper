@@ -7,6 +7,7 @@
 
 ![demo](./media/demo.gif)
 
+> This project is inspired by [speedtyper](https://www.speedtyper.dev/) & [monkeytype](https://monkeytype.com/), please go check them out!
 ## Usage
 
 Surf to `localhost:8080`. 
