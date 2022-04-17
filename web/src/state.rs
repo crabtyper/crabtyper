@@ -75,11 +75,11 @@ impl Reducer<GameState> for Action {
                 let mut text = &mut state.text;
 
                 if !text.wrong.is_empty() {
-                    if let Some(next) = text.cursor {
-                        if next == '❚' {
+                    if let Some(cursor) = text.cursor {
+                        if cursor == '❚' {
                             text.remaining = format!("{}{}", ' ', text.remaining);
                         } else {
-                            text.remaining = format!("{}{}", next, text.remaining);
+                            text.remaining = format!("{}{}", cursor, text.remaining);
                         }
                     }
 
@@ -91,8 +91,8 @@ impl Reducer<GameState> for Action {
                     }
 
                     while text.cursor == Some('\t') {
-                        if let Some(next) = text.cursor {
-                            text.remaining = format!("{}{}", next, text.remaining);
+                        if let Some(cursor) = text.cursor {
+                            text.remaining = format!("{}{}", cursor, text.remaining);
                         }
                         text.cursor = text.wrong.pop();
                     }
@@ -109,8 +109,8 @@ impl Reducer<GameState> for Action {
                 let mut stats = &mut state.stats;
                 let mut chars = text.remaining.chars();
 
-                if let Some(next) = text.cursor {
-                    if text.wrong.is_empty() && next == *key {
+                if let Some(cursor) = text.cursor {
+                    if text.wrong.is_empty() && cursor == *key {
                         text.correct.push(*key);
 
                         text.cursor = chars.next();
@@ -128,11 +128,11 @@ impl Reducer<GameState> for Action {
                     } else if text.wrong.len() < 10 {
                         stats.mistakes += 1;
 
-                        if let Some(next) = text.cursor {
-                            if next == ' ' {
+                        if let Some(cursor) = text.cursor {
+                            if cursor == ' ' {
                                 text.wrong.push('❚');
                             } else {
-                                text.wrong.push(next);
+                                text.wrong.push(cursor);
                             }
                         }
 
@@ -158,8 +158,6 @@ impl Reducer<GameState> for Action {
 
 impl GameState {
     pub fn reset() -> GameState {
-        GameState {
-            ..Default::default()
-        }
+        GameState::default()
     }
 }
