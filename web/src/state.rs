@@ -1,13 +1,13 @@
 use crate::{
     components::game::Snippet,
     constant::Status,
-    utils::calculate::{calculate_accuracy, calculate_progress},
+    utils::calculate::{calculate_accuracy, calculate_progress, calculate_wpm},
 };
 
 use yewdux::prelude::*;
 
 #[derive(Default, Clone, PartialEq)]
-pub struct Text {
+pub struct Code {
     pub lines: usize,
     pub cursor: Option<char>,
     pub remaining: String,
@@ -15,7 +15,7 @@ pub struct Text {
     pub wrong: String,
 }
 
-#[derive(Default, Clone, PartialEq)]
+#[derive(Default, Clone, Copy, PartialEq)]
 pub struct Stats {
     pub progress: u8,
     pub mistakes: u8,
@@ -27,7 +27,7 @@ pub struct Stats {
 
 #[derive(Default, Clone, PartialEq, Store)]
 pub struct GameState {
-    pub text: Text,
+    pub code: Code,
     pub stats: Stats,
     pub status: Status,
     pub language: String,
@@ -49,30 +49,20 @@ impl Reducer<GameState> for Action {
 
                 let mut chars = snippet.code.chars();
 
-                state.text.cursor = chars.next();
-                state.text.remaining = chars.as_str().to_string();
-                state.text.lines = snippet.code.lines().count() - 1;
+                state.code.cursor = chars.next();
+                state.code.remaining = chars.as_str().to_string();
+                state.code.lines = snippet.code.lines().count() - 1;
 
                 state.language = snippet.language.clone();
             }
 
             Action::Tick => {
                 state.stats.time += 1;
-
-                state.stats.wpm = {
-                    let minutes_past = state.stats.time as f32 / 60.0;
-                    let index = state.text.correct.len() as f32;
-
-                    if minutes_past > 0.0 {
-                        ((index / 5.0) / minutes_past).floor() as u8
-                    } else {
-                        0_u8
-                    }
-                };
+                state.stats.wpm = calculate_wpm(state.stats.time, &state.code.correct);
             }
 
             Action::BackSpace => {
-                let mut text = &mut state.text;
+                let mut text = &mut state.code;
 
                 if !text.wrong.is_empty() {
                     if let Some(cursor) = text.cursor {
@@ -105,7 +95,7 @@ impl Reducer<GameState> for Action {
                     state.status = Status::Playing
                 };
 
-                let mut text = &mut state.text;
+                let mut text = &mut state.code;
                 let mut stats = &mut state.stats;
                 let mut chars = text.remaining.chars();
 

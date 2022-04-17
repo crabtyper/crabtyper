@@ -4,11 +4,13 @@ use crate::{
 };
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
-use yewdux::prelude::use_store;
+use yewdux::prelude::{use_selector, Dispatch};
 
 #[function_component]
 pub fn Window() -> Html {
-    let (state, dispatch) = use_store::<GameState>();
+    let dispatch = Dispatch::<GameState>::new();
+    let code = use_selector(|state: &GameState| state.code.clone());
+
     let input_ref = use_node_ref();
 
     use_effect_with_deps(
@@ -33,17 +35,18 @@ pub fn Window() -> Html {
     };
 
     let onkeydown = {
-        let state = state.clone();
+        let code = code.clone();
 
         Callback::from(move |e: KeyboardEvent| {
             let mut key: Option<char> = None;
             let key_string: String = e.key();
+
             if key_string == "Enter" {
                 key = Some('\n');
             } else if key_string == "Tab" {
                 e.prevent_default();
                 key = Some('\t');
-            } else if key_string == "Backspace" && !state.text.wrong.is_empty() {
+            } else if key_string == "Backspace" && !code.wrong.is_empty() {
                 dispatch.apply(Action::BackSpace)
             } else if key_string.len() == 1 {
                 key = key_string.chars().next();
@@ -62,7 +65,7 @@ pub fn Window() -> Html {
     };
 
     let cursor = {
-        if let Some(next) = state.text.cursor {
+        if let Some(next) = code.cursor {
             if next == '\n' {
                 "↵\n".to_string()
             } else {
@@ -76,16 +79,16 @@ pub fn Window() -> Html {
     html! {
         <div>
             <div class="flex flex-row px-6 pt-6 gap-2">
-                <LineNumber lines={state.text.lines}/>
+                <LineNumber lines={code.lines}/>
                 <pre {onclick} class="relative display-inline w-full break-all" style="tab-size: 4;">
-                    <code class="text-green">{state.text.correct.clone()}</code>
-                    <code class="text-red">{state.text.wrong.clone()}</code>
+                    <code class="text-green">{code.correct.clone()}</code>
+                    <code class="text-red">{code.wrong.clone()}</code>
                     <code class="bg-white-light text-black-light">{cursor}</code>
-                    <code class="text-white">{state.text.remaining.clone()}</code>
+                    <code class="text-white">{code.remaining.clone()}</code>
                     <input
                         ref={input_ref}
                         {onkeydown}
-                        class="text-white"
+                        class="code-white"
                         autocomplete="off"
                         type="text"
                         style="position: absolute; width: 1px; left: -10000px;"

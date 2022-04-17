@@ -61,12 +61,10 @@ pub fn Game() -> Html {
     );
 
     html! {
-        <>
-            if state.status == Status::Passed {
-                <Result />
-            } else {
-                <Vim />
-            }
-        </>
+        if state.status == Status::Passed {
+            <Result />
+        } else {
+            <Vim />
+        }
     }
 }

@@ -12,3 +12,15 @@ impl Default for Status {
         Status::Ready
     }
 }
+
+#[derive(Debug, Clone, Copy, Display, PartialEq)]
+pub enum Mode {
+    NORMAL,
+    INSERT,
+}
+
+impl Default for Mode {
+    fn default() -> Self {
+        Mode::NORMAL
+    }
+}
