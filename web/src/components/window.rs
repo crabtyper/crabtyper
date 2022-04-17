@@ -53,11 +53,7 @@ pub fn Window() -> Html {
             }
 
             if let Some(k) = key {
-                if k.is_alphanumeric()
-                    || k.is_control()
-                    || k.is_whitespace()
-                    || k.is_ascii_punctuation()
-                {
+                if k.is_alphanumeric() || k.is_whitespace() || k.is_ascii_punctuation() {
                     dispatch.apply(Action::KeyPress(k));
                 }
             }
@@ -65,11 +61,11 @@ pub fn Window() -> Html {
     };
 
     let cursor = {
-        if let Some(next) = code.cursor {
-            if next == '\n' {
+        if let Some(cursor) = code.cursor {
+            if cursor == '\n' {
                 "↵\n".to_string()
             } else {
-                next.to_string()
+                cursor.to_string()
             }
         } else {
             "".to_string()
