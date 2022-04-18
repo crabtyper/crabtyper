@@ -13,6 +13,7 @@ impl Default for Status {
     }
 }
 
+#[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Clone, Copy, Display, PartialEq)]
 pub enum Mode {
     NORMAL,

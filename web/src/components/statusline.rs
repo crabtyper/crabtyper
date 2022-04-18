@@ -1,7 +1,10 @@
 use yew::prelude::*;
 use yewdux::prelude::use_selector;
 
-use crate::{constant::Status, state::GameState};
+use crate::{
+    constant::{Mode, Status},
+    state::GameState,
+};
 
 #[function_component]
 pub fn Statusline() -> Html {
@@ -11,14 +14,14 @@ pub fn Statusline() -> Html {
 
     let mode = {
         if *status == Status::Playing {
-            "INSERT".to_string()
+            Mode::INSERT
         } else {
-            "NORMAL".to_string()
+            Mode::NORMAL
         }
     };
 
     let mode_class = {
-        if mode == "NORMAL" {
+        if mode == Mode::NORMAL {
             "bg-green"
         } else {
             "bg-blue"
