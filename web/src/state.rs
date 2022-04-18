@@ -62,29 +62,29 @@ impl Reducer<GameState> for Action {
             }
 
             Action::BackSpace => {
-                let mut text = &mut state.code;
+                let mut code = &mut state.code;
 
-                if !text.wrong.is_empty() {
-                    if let Some(cursor) = text.cursor {
+                if !code.wrong.is_empty() {
+                    if let Some(cursor) = code.cursor {
                         if cursor == '❚' {
-                            text.remaining = format!("{}{}", ' ', text.remaining);
+                            code.remaining = format!("{}{}", ' ', code.remaining);
                         } else {
-                            text.remaining = format!("{}{}", cursor, text.remaining);
+                            code.remaining = format!("{}{}", cursor, code.remaining);
                         }
                     }
 
-                    text.cursor = text.wrong.pop();
-                    if let Some(c) = text.cursor {
+                    code.cursor = code.wrong.pop();
+                    if let Some(c) = code.cursor {
                         if c == '❚' {
-                            text.cursor = Some(' ')
+                            code.cursor = Some(' ')
                         }
                     }
 
-                    while text.cursor == Some('\t') {
-                        if let Some(cursor) = text.cursor {
-                            text.remaining = format!("{}{}", cursor, text.remaining);
+                    while code.cursor == Some('\t') {
+                        if let Some(cursor) = code.cursor {
+                            code.remaining = format!("{}{}", cursor, code.remaining);
                         }
-                        text.cursor = text.wrong.pop();
+                        code.cursor = code.wrong.pop();
                     }
                 }
             }
@@ -95,48 +95,48 @@ impl Reducer<GameState> for Action {
                     state.status = Status::Playing
                 };
 
-                let mut text = &mut state.code;
+                let mut code = &mut state.code;
                 let mut stats = &mut state.stats;
-                let mut chars = text.remaining.chars();
+                let mut chars = code.remaining.chars();
 
-                if let Some(cursor) = text.cursor {
-                    if text.wrong.is_empty() && cursor == *key {
-                        text.correct.push(*key);
+                if let Some(cursor) = code.cursor {
+                    if code.wrong.is_empty() && cursor == *key {
+                        code.correct.push(*key);
 
-                        text.cursor = chars.next();
+                        code.cursor = chars.next();
 
-                        if text.remaining.is_empty() {
+                        if code.remaining.is_empty() {
                             stats.accuracy =
-                                calculate_accuracy(&text.correct, &text.remaining, stats.mistakes);
+                                calculate_accuracy(&code.correct, &code.remaining, stats.mistakes);
                             state.status = Status::Passed;
                         }
 
-                        while text.cursor == Some('\t') {
-                            text.correct.push('\t');
-                            text.cursor = chars.next();
+                        while code.cursor == Some('\t') {
+                            code.correct.push('\t');
+                            code.cursor = chars.next();
                         }
-                    } else if text.wrong.len() < 10 {
+                    } else if code.wrong.len() < 10 {
                         stats.mistakes += 1;
 
-                        if let Some(cursor) = text.cursor {
+                        if let Some(cursor) = code.cursor {
                             if cursor == ' ' {
-                                text.wrong.push('❚');
+                                code.wrong.push('❚');
                             } else {
-                                text.wrong.push(cursor);
+                                code.wrong.push(cursor);
                             }
                         }
 
-                        text.cursor = chars.next();
+                        code.cursor = chars.next();
 
-                        while text.cursor == Some('\t') {
-                            text.wrong.push('\t');
-                            text.cursor = chars.next();
+                        while code.cursor == Some('\t') {
+                            code.wrong.push('\t');
+                            code.cursor = chars.next();
                         }
                     }
                 }
 
-                text.remaining = chars.as_str().to_string();
-                stats.progress = calculate_progress(&text.correct, &text.remaining);
+                code.remaining = chars.as_str().to_string();
+                stats.progress = calculate_progress(&code.correct, &code.remaining);
             }
 
             Action::Reset => {
