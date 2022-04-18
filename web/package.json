@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "setup": "rustup target add wasm32-unknown-unknown && cargo install trunk && npm i -g tailwindcss concurrently",
+    "setup": "rustup target add wasm32-unknown-unknown && cargo install trunk",
     "dev": "concurrently \"npm run dev:css\" \"npm run dev:serve\"",
-    "dev:css": "tailwindcss -c tailwind.config.js -o output.css --watch",
+    "dev:css": "tailwindcss -c tailwind.config.js -i ./src/styles/tailwind.css -o ./static/css/output.css --watch",
     "dev:serve": "trunk serve",
     "prod": "npm run prod:css && trunk build --release",
-    "prod:css": "tailwindcss -c tailwind.config.js -o output.css --minify"
+    "prod:css": "tailwindcss -c tailwind.config.js -i ./src/styles/tailwind.css -o ./static/css/output.css --minify",
+    "test": "wasm-pack test --chrome --firefox --headless"
+  },
+  "devDependencies": {
+    "concurrently": "^7.1.0",
+    "tailwindcss": "^3.0.24"
   }
 }

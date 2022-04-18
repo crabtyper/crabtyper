@@ -1,7 +1,7 @@
 module.exports = {
   content: [
     "./src/**/*.rs",
-    "./index.html",
+    "./static/index.html",
     "./src/**/*.html",
     "./src/**/*.css",
   ],
