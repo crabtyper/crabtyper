@@ -60,12 +60,13 @@ pub fn Window() -> Html {
         })
     };
 
+    let wrong = &code.wrong.replace('\n', "↵\n");
+
     let cursor = {
         if let Some(cursor) = code.cursor {
-            if cursor == '\n' {
-                "↵\n".to_string()
-            } else {
-                cursor.to_string()
+            match cursor {
+                '\n' => "↵\n".to_string(),
+                _ => cursor.to_string(),
             }
         } else {
             "".to_string()
@@ -78,7 +79,7 @@ pub fn Window() -> Html {
                 <LineNumber lines={code.lines}/>
                 <pre {onclick} class="relative display-inline w-full break-all" style="tab-size: 4;">
                     <code class="text-green">{&code.correct}</code>
-                    <code class="text-red">{&code.wrong}</code>
+                    <code class="text-red">{wrong}</code>
                     <code class="bg-white-light text-black-light">{cursor}</code>
                     <code class="text-white">{&code.remaining}</code>
                     <input
