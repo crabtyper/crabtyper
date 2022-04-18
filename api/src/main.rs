@@ -1,3 +1,3 @@
 fn main() {
-    let _result = api::start_server();
+    let _result = crabtyper_api::start_server();
 }
