@@ -77,10 +77,10 @@ pub fn Window() -> Html {
             <div class="flex flex-row px-6 pt-6 gap-2">
                 <LineNumber lines={code.lines}/>
                 <pre {onclick} class="relative display-inline w-full break-all" style="tab-size: 4;">
-                    <code class="text-green">{code.correct.clone()}</code>
-                    <code class="text-red">{code.wrong.clone()}</code>
+                    <code class="text-green">{&code.correct}</code>
+                    <code class="text-red">{&code.wrong}</code>
                     <code class="bg-white-light text-black-light">{cursor}</code>
-                    <code class="text-white">{code.remaining.clone()}</code>
+                    <code class="text-white">{&code.remaining}</code>
                     <input
                         ref={input_ref}
                         {onkeydown}
