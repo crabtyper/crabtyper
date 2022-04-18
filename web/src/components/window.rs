@@ -35,7 +35,7 @@ pub fn Window() -> Html {
     };
 
     let onkeydown = {
-        let code = code.clone();
+        let wrong = code.wrong.clone();
 
         Callback::from(move |e: KeyboardEvent| {
             let mut key: Option<char> = None;
@@ -46,7 +46,7 @@ pub fn Window() -> Html {
             } else if key_string == "Tab" {
                 e.prevent_default();
                 key = Some('\t');
-            } else if key_string == "Backspace" && !code.wrong.is_empty() {
+            } else if key_string == "Backspace" && !wrong.is_empty() {
                 dispatch.apply(Action::BackSpace)
             } else if key_string.len() == 1 {
                 key = key_string.chars().next();
