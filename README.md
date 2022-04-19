@@ -27,22 +27,21 @@ Then just press `r` to restart the game!
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-#### Install yew
-
+#### Run setup
 ```sh
-# Install trunk
-cargo install --locked trunk
+cd web/
 
-# Add the wasm build target
-rustup target add wasm32-unknown-unknown
+# Install npm packages
+npm run install
+
+# Adds the wasm build target & installs trunk
+npm run setup
 ```
 
 #### Start the development server
 
 ```sh
-cd web/
-
-trunk serve --open
+npm run dev
 ```
 
 ### API
