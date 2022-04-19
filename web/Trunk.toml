@@ -1,3 +1,6 @@
 [build]
 target = "./static/index.html"
 dist = "./dist"
+
+[watch]
+watch = ["./src/", "./static/"]
