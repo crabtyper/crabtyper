@@ -22,7 +22,8 @@ pub struct Stats {
     pub wpm: u8,
     pub accuracy: u8,
     pub time: usize,
-    pub combos: u8,
+    pub combo: u8,
+    pub max_combo: u8,
 }
 
 #[derive(Default, Clone, PartialEq, Store)]
@@ -101,6 +102,12 @@ impl Reducer<GameState> for Action {
 
                 if let Some(cursor) = code.cursor {
                     if code.wrong.is_empty() && cursor == *key {
+                        stats.combo += 1;
+
+                        if stats.combo > stats.max_combo {
+                            stats.max_combo = stats.combo;
+                        }
+
                         code.correct.push(*key);
 
                         code.cursor = chars.next();
@@ -116,6 +123,7 @@ impl Reducer<GameState> for Action {
                             code.cursor = chars.next();
                         }
                     } else if code.wrong.len() < 10 {
+                        stats.combo = 0;
                         stats.mistakes += 1;
 
                         if let Some(cursor) = code.cursor {
