@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 diesel = { version = "1.4.8", features = ["sqlite", "r2d2"] }
+libsqlite3-sys = { version = "*", features = ["bundled"] }
 dotenv = "0.15.0"
 actix-web = "4"
 actix-cors = "0.6.1"
