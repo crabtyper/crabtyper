@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - web_data:/usr/share/nginx/html:ro
+  api:
+    build:
+      context: ./api/
+    ports:
+      - 5000:5000
+  web:
+    build: 
+      context: ./web/
+    depends_on:
+      - api
+    volumes:
+      - web_data:/usr/src/crabtyper-web/dist:rw
+
+volumes:
+  web_data:
