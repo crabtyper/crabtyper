@@ -34,7 +34,7 @@ pub fn Game() -> Html {
                 match state.status {
                     Status::Ready => {
                         wasm_bindgen_futures::spawn_local(async move {
-                            let snippet: Snippet = Request::get("http://localhost:5000/api/snippet")
+                            let snippet: Snippet = Request::get("/api/snippets/random")
                                 .send()
                                 .await
                                 .unwrap()

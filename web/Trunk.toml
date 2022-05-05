@@ -4,3 +4,6 @@ dist = "./dist"
 
 [watch]
 watch = ["./src/", "./static/"]
+
+[[proxy]]
+backend = "http://localhost:5000/api"
