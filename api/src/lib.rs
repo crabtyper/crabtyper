@@ -9,12 +9,12 @@ use diesel::{
 };
 use handlers::{
     get_languages, 
+    add_language,
     get_snippets, 
     get_random_snippet, 
     get_random_snippet_by_lang, 
     add_snippet, 
     delete_snippet, 
-    add_language
 };
 
 pub mod db;
