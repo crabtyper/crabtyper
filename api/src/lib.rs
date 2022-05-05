@@ -1,12 +1,20 @@
 #[macro_use]
 extern crate diesel;
-extern crate dotenv;
 
 use actix_cors::Cors;
-use actix_web::{web, App, HttpServer};
+use actix_web::{web, App, HttpServer, http::header, middleware};
 use diesel::{
     r2d2::{self, ConnectionManager},
     SqliteConnection,
+};
+use handlers::{
+    get_languages, 
+    get_snippets, 
+    get_random_snippet, 
+    get_random_snippet_by_lang, 
+    add_snippet, 
+    delete_snippet, 
+    add_language
 };
 
 pub mod db;
@@ -14,42 +22,60 @@ pub mod handlers;
 pub mod models;
 pub mod schema;
 
-pub type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
+pub type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 #[actix_web::main]
 pub async fn start_server() -> std::io::Result<()> {
     dotenv::dotenv().ok();
 
-    std::env::set_var("RUST_LOG", "actix_web=debug");
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("debug"));
+
+    let server_port = if let Ok(port) = std::env::var("PORT") {
+        port.parse::<u16>().expect("Could not convert PORT env to string!")
+    } else {
+        5000
+    };
 
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-
     let manager = ConnectionManager::<SqliteConnection>::new(database_url);
-
-    let pool: Pool = r2d2::Pool::builder()
+    let pool = r2d2::Pool::builder()
         .build(manager)
-        .expect("Failed  to create pool");
+        .expect("Failed to create pool.");
+
+
+    log::info!("{}", format!("starting HTTP server at http://localhost:{server_port}"));
 
     HttpServer::new(move || {
-        let cors = Cors::default().allow_any_origin();
-        App::new().wrap(cors).data(pool.clone()).service(
-            web::scope("/api")
-                .route("/languages", web::get().to(handlers::get_languages))
-                .route("/languages", web::post().to(handlers::add_language))
-                .route("/snippets", web::get().to(handlers::get_snippets))
-                .route(
-                    "/snippet/{snippet_id}",
-                    web::delete().to(handlers::delete_snippet),
-                )
-                .route("/snippet", web::get().to(handlers::get_random_snippet))
-                .route("/snippet", web::post().to(handlers::add_snippet))
-                .route(
-                    "/snippet/{language}",
-                    web::get().to(handlers::get_random_snippet_by_lang),
-                ),
-        )
-    })
-    .bind("127.0.0.1:5000")?
+        App::new()
+            .wrap(
+                Cors::default()
+                    .allowed_origin("http://127.0.0.1:8080")
+                    .allowed_methods(vec!["GET", "POST"])
+                    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+                    .allowed_header(header::CONTENT_TYPE)
+                    .supports_credentials()
+                    .max_age(3600),
+            )
+            .app_data(web::Data::new(pool.clone()))
+            .wrap(middleware::Logger::default())
+            .service(
+                web::scope("/api")
+                .service(
+                        web::scope("/languages")
+                        .service(get_languages)
+                        .service(add_language)
+                    )
+                .service(
+                        web::scope("/snippets")
+                        .service(get_snippets)
+                        .service(get_random_snippet)
+                        .service(get_random_snippet_by_lang)
+                        .service(add_snippet)
+                        .service(delete_snippet)
+                    )
+            )
+        })
+    .bind(("127.0.0.1", server_port))?
     .run()
     .await
 }

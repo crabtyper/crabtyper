@@ -3,15 +3,13 @@ use super::schema::snippets;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Identifiable, Queryable, Insertable, Debug)]
-#[table_name = "languages"]
+#[derive(Debug, Serialize, Deserialize, Identifiable, Queryable, Insertable)]
 pub struct Language {
     pub id: String,
     pub name: String,
 }
 
-#[derive(Serialize, Deserialize, Identifiable, Queryable, Insertable, Debug)]
-#[table_name = "snippets"]
+#[derive(Debug, Serialize, Deserialize, Identifiable, Queryable, Insertable)]
 pub struct Snippet {
     pub id: String,
     pub code: String,
@@ -29,7 +27,7 @@ pub struct InputSnippet {
     pub language: String,
 }
 
-#[derive(Deserialize, Serialize, Queryable, Debug)]
+#[derive(Debug, Deserialize, Serialize, Queryable)]
 pub struct SnippetView {
     pub id: String,
     pub code: String,
