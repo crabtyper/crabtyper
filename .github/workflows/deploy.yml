@@ -41,7 +41,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/web"
-          app_build_command: "prod"
+          app_build_command: "npm run prod"
           output_location: "/web/dist"
 
   close_pull_request_job:
