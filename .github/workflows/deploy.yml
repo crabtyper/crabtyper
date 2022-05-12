@@ -19,7 +19,8 @@ jobs:
         with:
           submodules: true
 
-      - uses: actions-rs/toolchain@v1
+      - name: Setup Rust toolchain
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
           target: wasm32-unknown-unknown
@@ -27,11 +28,10 @@ jobs:
           override: true
           profile: minimal
 
-      - uses: Swatinem/rust-cache@v1
-
-      - uses: jetli/trunk-action@v0.1.0
-        with:
-          version: 'latest'
+      - name: Build
+        run: "./scripts/build.linux.sh"
+        env:
+          CI: true
 
       - name: Build And Deploy
         id: builddeploy
@@ -41,7 +41,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/web"
-          app_build_command: "npm run prod"
+          app_build_command: "echo 'manually building web (see ./ci/build.sh)'"
           output_location: "/web/dist"
 
   close_pull_request_job:
