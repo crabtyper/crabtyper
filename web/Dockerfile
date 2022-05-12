@@ -8,7 +8,6 @@ WORKDIR /usr/src/crabtyper-web
 
 COPY . .
 
-
 RUN npm install
 
 RUN npm run setup
