@@ -29,7 +29,7 @@ jobs:
           profile: minimal
 
       - name: Build
-        run: "./scripts/build.linux.sh"
+        run: "./ci/build.sh"
         env:
           CI: true
 
