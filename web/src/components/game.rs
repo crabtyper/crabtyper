@@ -29,12 +29,17 @@ pub fn Game() -> Html {
     use_effect_with_deps(
         {
             let state = state.clone();
+            let api_url = if let Some(url) = option_env!("API_URL") {
+                url
+            } else {
+                "/api/snippets/random"
+            };
 
             move |_| {
                 match state.status {
                     Status::Ready => {
                         wasm_bindgen_futures::spawn_local(async move {
-                            let snippet: Snippet = Request::get("/api/snippets/random")
+                            let snippet: Snippet = Request::get(api_url)
                                 .send()
                                 .await
                                 .unwrap()
