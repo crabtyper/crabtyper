@@ -9,6 +9,7 @@
     "dev:serve": "trunk serve",
     "prod": "npm run prod:css && trunk build --release",
     "prod:css": "tailwindcss -c tailwind.config.js -i ./src/styles/tailwind.css -o ./static/css/output.css --minify",
+    "azure:build": "tailwindcss -c tailwind.config.js -i ./src/styles/tailwind.css -o ./static/css/output.css --minify",
     "test": "wasm-pack test --chrome --firefox --headless"
   },
   "devDependencies": {
