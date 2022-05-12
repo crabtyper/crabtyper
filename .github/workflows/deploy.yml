@@ -28,11 +28,6 @@ jobs:
           override: true
           profile: minimal
 
-      - name: Build
-        run: "./ci/build.sh"
-        env:
-          CI: true
-
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
