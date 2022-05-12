@@ -14,7 +14,9 @@ COPY . .
 RUN cargo build --release --target x86_64-unknown-linux-musl --bin crabtyper-api
 
 FROM alpine AS runtime
-ENV DATABASE_URL=snippets.db
+ENV DATABASE_URL=/var/lib/snippets.db
 ENV PORT=5000
-COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/crabtyper-api /usr/local/bin/
+EXPOSE 5000
+COPY --from=builder /app/snippets.db /var/lib/snippets.db
+ COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/crabtyper-api /usr/local/bin/
 CMD ["/usr/local/bin/crabtyper-api"]
