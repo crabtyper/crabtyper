@@ -47,15 +47,7 @@ pub async fn start_server() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
-            .wrap(
-                Cors::default()
-                    .allowed_origin("http://127.0.0.1:8080")
-                    .allowed_methods(vec!["GET", "POST"])
-                    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
-                    .allowed_header(header::CONTENT_TYPE)
-                    .supports_credentials()
-                    .max_age(3600),
-            )
+            .wrap(Cors::default())
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::default())
             .service(
@@ -75,7 +67,7 @@ pub async fn start_server() -> std::io::Result<()> {
                     )
             )
         })
-    .bind(("127.0.0.1", server_port))?
+    .bind(("0.0.0.0", server_port))?
     .run()
     .await
 }
