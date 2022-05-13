@@ -22,7 +22,7 @@ jobs:
       - name: Setup Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           target: wasm32-unknown-unknown
           components: rust-src
           override: true
