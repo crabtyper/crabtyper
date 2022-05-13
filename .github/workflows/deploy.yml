@@ -27,11 +27,14 @@ jobs:
           components: rust-src
           override: true
           profile: minimal
-
-      - name: Setup trunk
-        uses: jetli/trunk-action@v0.1.0
-        with:
-          version: 'latest'
+      
+      # - name: Setup trunk
+      #   uses: jetli/trunk-action@v0.1.0
+      #   with:
+      #     version: 'latest'
+      
+      - name: Build
+        run: "./ci/build.sh"
 
       - name: Build And Deploy
         id: builddeploy
