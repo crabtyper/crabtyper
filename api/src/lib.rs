@@ -43,11 +43,19 @@ pub async fn start_server() -> std::io::Result<()> {
         .expect("Failed to create pool.");
 
 
-    log::info!("{}", format!("starting HTTP server at http://localhost:{server_port}"));
+    log::info!("{}", format!("starting HTTP server at http://0.0.0.0:{server_port}"));
+    
 
     HttpServer::new(move || {
         App::new()
-            .wrap(Cors::default())
+            .wrap(
+                Cors::default()
+                .allowed_origin("https://crabtyper.com")
+                .allowed_origin("localhost")
+                .allowed_methods(vec!["GET", "POST"])
+                .allowed_header(header::CONTENT_TYPE)
+                .max_age(3600)
+            )
             .app_data(web::Data::new(pool.clone()))
             .wrap(middleware::Logger::default())
             .service(
