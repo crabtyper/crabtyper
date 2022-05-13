@@ -28,15 +28,15 @@ jobs:
           override: true
           profile: minimal
       
-      # - name: Setup trunk
-      #   uses: jetli/trunk-action@v0.1.0
-      #   with:
-      #     version: 'latest'
+      - name: Setup trunk
+        uses: jetli/trunk-action@v0.1.0
+        with:
+          version: 'latest'
       
-      - name: Build
-        run: "./ci/build.sh"
-        env:
-          VERSION: v0.15.0
+      # - name: Build
+      #   run: "./ci/build.sh"
+      #   env:
+      #     VERSION: v0.15.0
 
       - name: deploy
         id: deploy
