@@ -31,7 +31,7 @@ jobs:
       - name: Setup trunk
         uses: jetli/trunk-action@v0.1.0
         with:
-        version: 'latest'
+          version: 'latest'
 
       - name: Build And Deploy
         id: builddeploy
