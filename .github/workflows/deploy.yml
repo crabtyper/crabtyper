@@ -35,6 +35,8 @@ jobs:
       
       - name: Build
         run: "./ci/build.sh"
+        env:
+          VERSION: v0.15.0
 
       - name: Build And Deploy
         id: builddeploy
