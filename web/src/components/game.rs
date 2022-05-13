@@ -32,7 +32,7 @@ pub fn Game() -> Html {
             let api_url = if let Some(url) = option_env!("API_URL") {
                 url
             } else {
-                "/api/snippets/random"
+                "https://crabtyper-api.azurewebsites.net/api/snippets/random"
             };
 
             move |_| {
