@@ -8,4 +8,4 @@ wget -qO- https://github.com/thedodd/trunk/releases/download/${VERSION}/trunk-x8
 cd web/
 
 npm install
-npm run prod
+npm run build
