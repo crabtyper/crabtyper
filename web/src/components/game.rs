@@ -1,10 +1,10 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use gloo::timers::callback::Interval;
-use reqwasm::http::Request;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
+use gloo::timers::callback::Interval;
+use gloo::net::http::Request;
 
 use crate::components::result::Result;
 use crate::components::vim::Vim;
