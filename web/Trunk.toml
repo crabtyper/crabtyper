@@ -7,3 +7,8 @@ watch = ["./src/", "./static/"]
 
 [[proxy]]
 backend = "http://localhost:5000/api"
+
+[[hooks]]
+stage = "build"
+command = "sh"
+command_arguments = ["-c", "tailwindcss -c tailwind.config.js -i ./src/styles/tailwind.css -o ./static/css/output.css --minify"]

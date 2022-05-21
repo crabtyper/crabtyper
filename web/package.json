@@ -4,10 +4,9 @@
   "description": "",
   "scripts": {
     "setup": "rustup target add wasm32-unknown-unknown && cargo install trunk",
-    "dev": "concurrently \"npm run dev:css\" \"npm run dev:serve\"",
+    "dev": "trunk serve --open",
     "dev:css": "tailwindcss -c tailwind.config.js -i ./src/styles/tailwind.css -o ./static/css/output.css --watch",
-    "dev:serve": "trunk serve",
-    "build": "npm run build:css && trunk build --release",
+    "build": "trunk build --release",
     "build:css": "tailwindcss -c tailwind.config.js -i ./src/styles/tailwind.css -o ./static/css/output.css --minify",
     "test": "wasm-pack test --chrome --firefox --headless"
   },
