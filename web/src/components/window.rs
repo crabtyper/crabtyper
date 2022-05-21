@@ -85,7 +85,6 @@ pub fn Window() -> Html {
                     <input
                         ref={input_ref}
                         {onkeydown}
-                        class="code-white"
                         autocomplete="off"
                         type="text"
                         style="position: absolute; width: 1px; left: -10000px;"
