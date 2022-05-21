@@ -8,26 +8,23 @@
 ![demo](./media/demo.gif)
 
 > This project is inspired by [speedtyper](https://www.speedtyper.dev/) & [monkeytype](https://monkeytype.com/), please go check them out!
-## Usage
 
-Surf to `localhost:8080`. 
+## Try it out!
+
+Surf to <https://www.crabtyper.com/>.
 
 Click on the text & start typing!
 
-After you typed the code snippet you will see your result with your wpm, time, accuracy & mistakes.\
+After you typed the random code snippet, you will see your result with your wpm, time, accuracy, mistakes &
+combos.\
 Then just press `r` to restart the game!
 
 ## Installation Guide
 
 ### Web
 
-#### Install Rust
+#### Setup
 
-```sh
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-#### Run setup
 ```sh
 cd web/
 
