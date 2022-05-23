@@ -3,9 +3,8 @@
   <p>
     <strong>A speedtyping web app written in Rust</strong>
   </p>
+  <img src="./media/demo.gif" />
 </div>
-
-![demo](./media/demo.gif)
 
 > This project is inspired by [speedtyper](https://www.speedtyper.dev/) & [monkeytype](https://monkeytype.com/), please go check them out!
 
