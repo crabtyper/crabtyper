@@ -14,4 +14,3 @@ web-sys = "0.3.57"
 gloo = "0.7.0"
 yew = { git = "https://github.com/yewstack/yew.git", features = ["csr"] }
 yewdux = { git = "https://github.com/intendednull/yewdux.git", rev = "8ba6af21f" }
-wee_alloc = "0.4.5"
