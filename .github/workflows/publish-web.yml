@@ -3,10 +3,9 @@ name: Publish web
 on:
   push:
     branches: [main]
-    only:
-        changes:
-          - "web/**"
-          - "Cargo.toml"
+    paths:
+      - "web/**"
+      - "Cargo.toml"
 
 jobs:
   publish:
