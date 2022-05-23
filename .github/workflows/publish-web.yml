@@ -1,0 +1,42 @@
+name: Publish web
+
+on:
+  push:
+    branches: [main]
+  only:
+      changes:
+        - "web/**"
+        - "Cargo.toml"
+
+jobs:
+  publish:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          target: wasm32-unknown-unknown
+          components: rust-src
+          override: true
+          profile: minimal
+
+      - uses: Swatinem/rust-cache@v1
+
+      - uses: jetli/trunk-action@v0.1.0
+        with:
+          version: 'latest'
+
+      - name: Build
+        run: "./ci/build.sh"
+
+      - name: Deploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WONDERFUL_DESERT_06F1B7F03 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "/web"
+          app_build_command: "echo 'manually built the web/'"
+          output_location: "./dist"
