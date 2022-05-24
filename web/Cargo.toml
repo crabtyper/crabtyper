@@ -12,5 +12,5 @@ wasm-bindgen = "0.2.80"
 wasm-bindgen-futures = "0.4.30"
 web-sys = "0.3.57"
 gloo = "0.7.0"
-yew = { git = "https://github.com/yewstack/yew.git", features = ["csr"] }
+yew = { git = "https://github.com/yewstack/yew.git", features = ["csr"], rev = "c5b77909" }
 yewdux = { git = "https://github.com/intendednull/yewdux.git", rev = "8ba6af21f" }
