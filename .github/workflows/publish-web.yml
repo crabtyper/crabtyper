@@ -8,6 +8,7 @@ on:
       - "Cargo.toml"
       - ".github/worklfows/publish-web.yml"
 
+
 jobs:
   publish:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
