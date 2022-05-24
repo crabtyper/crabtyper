@@ -6,6 +6,7 @@ on:
     paths:
       - "web/**"
       - "Cargo.toml"
+      - ".github/worklfows/publish-web.yml"
 
 jobs:
   publish:
