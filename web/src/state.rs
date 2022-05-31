@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::{
     components::game::Snippet,
     constant::Status,
@@ -43,23 +45,29 @@ pub enum Action {
 }
 
 impl Reducer<GameState> for Action {
-    fn apply(&self, state: &mut GameState) {
+    fn apply(&self, mut gamestate: Rc<GameState>) -> Rc<GameState> {
+        let mut state = Rc::make_mut(&mut gamestate);
+
         match self {
             Action::NewSnippet(snippet) => {
-                *state = GameState::reset();
+                let mut new_state = GameState::reset();
 
                 let mut chars = snippet.code.chars();
 
-                state.code.cursor = chars.next();
-                state.code.remaining = chars.as_str().to_string();
-                state.code.lines = snippet.code.lines().count() - 1;
+                new_state.code.cursor = chars.next();
+                new_state.code.remaining = chars.as_str().to_string();
+                new_state.code.lines = snippet.code.lines().count() - 1;
 
-                state.language = snippet.language.clone();
+                new_state.language = snippet.language.clone();
+
+                Rc::new(new_state)
             }
 
             Action::Tick => {
                 state.stats.time += 1;
                 state.stats.wpm = calculate_wpm(state.stats.time, &state.code.correct);
+
+                gamestate
             }
 
             Action::BackSpace => {
@@ -88,6 +96,8 @@ impl Reducer<GameState> for Action {
                         code.cursor = code.wrong.pop();
                     }
                 }
+
+                gamestate
             }
 
             // TODO: clean this up
@@ -145,10 +155,14 @@ impl Reducer<GameState> for Action {
 
                 code.remaining = chars.as_str().to_string();
                 stats.progress = calculate_progress(&code.correct, &code.remaining);
+
+                gamestate
             }
 
             Action::Reset => {
                 *state = GameState::reset();
+
+                gamestate
             }
         }
     }
