@@ -100,8 +100,8 @@ impl Reducer<GameState> for Action {
                 gamestate
             }
 
-            // TODO: clean this up
             Action::KeyPress(key) => {
+                // change status to playing
                 if state.status != Status::Passed {
                     state.status = Status::Playing
                 };
@@ -111,31 +111,36 @@ impl Reducer<GameState> for Action {
                 let mut chars = code.remaining.chars();
 
                 if let Some(cursor) = code.cursor {
+                    // correct key press
                     if code.wrong.is_empty() && cursor == *key {
+                        // update combo stats
                         stats.combo += 1;
-
                         if stats.combo > stats.max_combo {
                             stats.max_combo = stats.combo;
                         }
-
+                        // update the cursor to next key
                         code.correct.push(*key);
-
                         code.cursor = chars.next();
 
+                        // skip tab characters
+                        while code.cursor == Some('\t') {
+                            code.correct.push('\t');
+                            code.cursor = chars.next();
+                        }
+
+                        // end of code snippet
                         if code.remaining.is_empty() {
                             stats.accuracy =
                                 calculate_accuracy(&code.correct, &code.remaining, stats.mistakes);
                             state.status = Status::Passed;
                         }
-
-                        while code.cursor == Some('\t') {
-                            code.correct.push('\t');
-                            code.cursor = chars.next();
-                        }
+                    // wrong key press
                     } else if code.wrong.len() < 10 {
+                        // update stats
                         stats.combo = 0;
                         stats.mistakes += 1;
 
+                        // make space character visible
                         if let Some(cursor) = code.cursor {
                             if cursor == ' ' {
                                 code.wrong.push('❚');
