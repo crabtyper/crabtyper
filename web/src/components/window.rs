@@ -99,21 +99,17 @@ pub fn Window() -> Html {
         }
     };
 
-    let correct_classes = classes!(
-        // "hljs",
-        "text-green",
-        format!("language-{}", language.to_lowercase())
-    );
+    let hljs_classes = classes!("hljs", format!("language-{}", language.to_lowercase()));
 
     html! {
         <div>
             <div class="flex flex-row px-6 pt-6 gap-2">
                 <LineNumber lines={code.lines}/>
                 <pre {onclick} class="relative display-inline w-full break-all" style="tab-size: 4;">
-                    <code class={correct_classes}>{html_escape::encode_safe(&code.correct).to_string()}</code>
+                    <code>{html_escape::encode_safe(&code.correct).to_string()}</code>
                     <code class="text-red">{wrong}</code>
                     <code class="bg-white-light text-black-light">{cursor}</code>
-                    <code class="hljs language-rust">{&code.remaining}</code>
+                    <code class={hljs_classes}>{&code.remaining}</code>
                     <input
                         ref={input_ref}
                         {onkeydown}
