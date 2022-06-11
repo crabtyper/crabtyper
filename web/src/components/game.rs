@@ -48,7 +48,7 @@ pub fn Game() -> Html {
                                 .unwrap();
 
                             dispatch.apply(Action::NewSnippet(snippet));
-                        })
+                        });
                     }
                     Status::Playing => {
                         *timer.borrow_mut() = Some(Interval::new(1000, move || {

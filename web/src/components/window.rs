@@ -1,5 +1,6 @@
 use crate::{
     components::linenumber::LineNumber,
+    external,
     state::{Action, GameState},
 };
 use web_sys::HtmlInputElement;
@@ -10,6 +11,9 @@ use yewdux::prelude::{use_selector, Dispatch};
 pub fn Window() -> Html {
     let dispatch = Dispatch::<GameState>::new();
     let code = use_selector(|state: &GameState| state.code.clone());
+    let language = use_selector(|state: &GameState| state.language.clone());
+
+    let higlighted = use_state(|| false);
 
     let input_ref = use_node_ref();
 
@@ -19,10 +23,32 @@ pub fn Window() -> Html {
             move |_| {
                 let input = input_ref.cast::<HtmlInputElement>().unwrap();
                 input.focus().unwrap();
+
                 || ()
             }
         },
         (),
+    );
+
+    use_effect(move || {
+        gloo::console::log!("rendering...");
+        || ()
+    });
+
+    use_effect_with_deps(
+        {
+            let remaining = code.remaining.clone();
+            move |_| {
+                gloo::console::log!("remaining changed");
+                if !remaining.is_empty() && !*higlighted {
+                    gloo::console::log!("highlighting...");
+                    external::Hljs::highlight_all();
+                    higlighted.set(true);
+                }
+                || ()
+            }
+        },
+        code.remaining.clone(),
     );
 
     let onclick = {
@@ -73,15 +99,21 @@ pub fn Window() -> Html {
         }
     };
 
+    let correct_classes = classes!(
+        // "hljs",
+        "text-green",
+        format!("language-{}", language.to_lowercase())
+    );
+
     html! {
         <div>
             <div class="flex flex-row px-6 pt-6 gap-2">
                 <LineNumber lines={code.lines}/>
                 <pre {onclick} class="relative display-inline w-full break-all" style="tab-size: 4;">
-                    <code class="text-green">{&code.correct}</code>
+                    <code class={correct_classes}>{html_escape::encode_safe(&code.correct).to_string()}</code>
                     <code class="text-red">{wrong}</code>
                     <code class="bg-white-light text-black-light">{cursor}</code>
-                    <code class="text-white">{&code.remaining}</code>
+                    <code class="hljs language-rust">{&code.remaining}</code>
                     <input
                         ref={input_ref}
                         {onkeydown}
