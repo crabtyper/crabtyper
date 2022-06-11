@@ -60,8 +60,6 @@ impl Reducer<GameState> for Action {
 
                 new_state.language = snippet.language.clone();
 
-                gloo::console::log!("state -> changing snippet");
-
                 Rc::new(new_state)
             }
 
@@ -163,8 +161,6 @@ impl Reducer<GameState> for Action {
 
                 code.remaining = chars.as_str().to_string();
                 stats.progress = calculate_progress(&code.correct, &code.remaining);
-
-                gloo::console::debug!("state -> keypress");
 
                 gamestate
             }
