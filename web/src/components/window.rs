@@ -1,9 +1,10 @@
 use crate::{
     components::linenumber::LineNumber,
-    external,
+    external::{self, HighlightResult},
     state::{Action, GameState},
 };
-use web_sys::HtmlInputElement;
+use wasm_bindgen::JsValue;
+use web_sys::{HtmlElement, HtmlInputElement};
 use yew::prelude::*;
 use yewdux::prelude::{use_selector, Dispatch};
 
@@ -13,9 +14,8 @@ pub fn Window() -> Html {
     let code = use_selector(|state: &GameState| state.code.clone());
     let language = use_selector(|state: &GameState| state.language.clone());
 
-    let higlighted = use_state(|| false);
-
     let input_ref = use_node_ref();
+    let correct_ref = use_node_ref();
 
     use_effect_with_deps(
         {
@@ -30,25 +30,29 @@ pub fn Window() -> Html {
         (),
     );
 
-    use_effect(move || {
-        gloo::console::log!("rendering...");
-        || ()
-    });
+    let options = external::HighlightOptions {
+        language: "rust".to_string(),
+        ignore_illegals: true,
+    };
 
     use_effect_with_deps(
         {
-            let remaining = code.remaining.clone();
+            let correct = code.correct.clone();
+            let correct_ref = correct_ref.clone();
             move |_| {
-                gloo::console::log!("remaining changed");
-                if !remaining.is_empty() && !*higlighted {
-                    gloo::console::log!("highlighting...");
-                    external::Hljs::highlight_all();
-                    higlighted.set(true);
+                if !correct.is_empty() {
+                    let highlighted: HighlightResult = external::Hljs::highlight(
+                        &correct,
+                        &JsValue::from_serde(&options).unwrap(),
+                    );
+
+                    let correct_code = correct_ref.cast::<HtmlElement>().unwrap();
+                    correct_code.set_inner_html(&highlighted.value());
                 }
                 || ()
             }
         },
-        code.remaining.clone(),
+        code.correct.clone(),
     );
 
     let onclick = {
@@ -99,17 +103,21 @@ pub fn Window() -> Html {
         }
     };
 
-    let hljs_classes = classes!("hljs", format!("language-{}", language.to_lowercase()));
+    let hljs_classes = classes!(
+        "hljs",
+        "text-white",
+        format!("language-{}", language.to_lowercase())
+    );
 
     html! {
         <div>
             <div class="flex flex-row px-6 pt-6 gap-2">
                 <LineNumber lines={code.lines}/>
                 <pre {onclick} class="relative display-inline w-full break-all" style="tab-size: 4;">
-                    <code>{html_escape::encode_safe(&code.correct).to_string()}</code>
+                    <code ref={correct_ref} class={hljs_classes} />
                     <code class="text-red">{wrong}</code>
                     <code class="bg-white-light text-black-light">{cursor}</code>
-                    <code class={hljs_classes}>{&code.remaining}</code>
+                    <code class="text-white">{&code.remaining}</code>
                     <input
                         ref={input_ref}
                         {onkeydown}

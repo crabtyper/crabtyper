@@ -15,7 +15,6 @@ fn main() {
     };
 
     external::Hljs::configure(&JsValue::from_serde(&options).unwrap());
-    external::Hljs::debug_mode();
 
     yew::Renderer::<App>::new().render();
 }
