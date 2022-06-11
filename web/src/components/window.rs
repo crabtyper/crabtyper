@@ -1,8 +1,10 @@
 use crate::{
     components::linenumber::LineNumber,
+    external::{self, HighlightResult},
     state::{Action, GameState},
 };
-use web_sys::HtmlInputElement;
+use wasm_bindgen::JsValue;
+use web_sys::{HtmlElement, HtmlInputElement};
 use yew::prelude::*;
 use yewdux::prelude::{use_selector, Dispatch};
 
@@ -10,8 +12,10 @@ use yewdux::prelude::{use_selector, Dispatch};
 pub fn Window() -> Html {
     let dispatch = Dispatch::<GameState>::new();
     let code = use_selector(|state: &GameState| state.code.clone());
+    let language = use_selector(|state: &GameState| state.language.clone());
 
     let input_ref = use_node_ref();
+    let correct_ref = use_node_ref();
 
     use_effect_with_deps(
         {
@@ -19,10 +23,36 @@ pub fn Window() -> Html {
             move |_| {
                 let input = input_ref.cast::<HtmlInputElement>().unwrap();
                 input.focus().unwrap();
+
                 || ()
             }
         },
         (),
+    );
+
+    let options = external::HighlightOptions {
+        language: "rust".to_string(),
+        ignore_illegals: true,
+    };
+
+    use_effect_with_deps(
+        {
+            let correct = code.correct.clone();
+            let correct_ref = correct_ref.clone();
+            move |_| {
+                if !correct.is_empty() {
+                    let highlighted: HighlightResult = external::Hljs::highlight(
+                        &correct,
+                        &JsValue::from_serde(&options).unwrap(),
+                    );
+
+                    let correct_code = correct_ref.cast::<HtmlElement>().unwrap();
+                    correct_code.set_inner_html(&highlighted.value());
+                }
+                || ()
+            }
+        },
+        code.correct.clone(),
     );
 
     let onclick = {
@@ -73,12 +103,18 @@ pub fn Window() -> Html {
         }
     };
 
+    let hljs_classes = classes!(
+        "hljs",
+        "text-white",
+        format!("language-{}", language.to_lowercase())
+    );
+
     html! {
         <div>
             <div class="flex flex-row px-6 pt-6 gap-2">
                 <LineNumber lines={code.lines}/>
                 <pre {onclick} class="relative display-inline w-full break-all" style="tab-size: 4;">
-                    <code class="text-green">{&code.correct}</code>
+                    <code ref={correct_ref} class={hljs_classes} />
                     <code class="text-red">{wrong}</code>
                     <code class="bg-white-light text-black-light">{cursor}</code>
                     <code class="text-white">{&code.remaining}</code>
