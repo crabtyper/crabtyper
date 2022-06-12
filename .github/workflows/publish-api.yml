@@ -25,6 +25,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ./api
+          context: api/
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/crabtyper-api:latest
