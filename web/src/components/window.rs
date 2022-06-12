@@ -30,17 +30,16 @@ pub fn Window() -> Html {
         (),
     );
 
-    let options = external::HighlightOptions {
-        language: "rust".to_string(),
-        ignore_illegals: true,
-    };
-
     use_effect_with_deps(
         {
             let correct = code.correct.clone();
             let correct_ref = correct_ref.clone();
             move |_| {
                 if !correct.is_empty() {
+                    let options = external::HighlightOptions {
+                        language: "rust".to_string(),
+                        ignore_illegals: true,
+                    };
                     let highlighted: HighlightResult = external::Hljs::highlight(
                         &correct,
                         &JsValue::from_serde(&options).unwrap(),
