@@ -27,4 +27,4 @@ jobs:
         with:
           context: ./api
           push: true
-          tags: brancob/crabtyper-api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/crabtyper-api:latest
