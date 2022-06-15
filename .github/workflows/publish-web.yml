@@ -2,7 +2,9 @@ name: Publish web
 
 on:
   push:
-    branches: [main]
+    branches: 
+      - main
+      - develop
     paths:
       - "web/**"
       - "Cargo.toml"
@@ -40,3 +42,4 @@ jobs:
           app_location: "/web"
           app_build_command: "echo 'manually built the web/'"
           output_location: "./dist"
+          production_brach: "main"
