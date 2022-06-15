@@ -1,27 +1,16 @@
 use yew::prelude::*;
 use yewdux::prelude::use_selector;
 
-use crate::{
-    constant::{Mode, Status},
-    state::GameState,
-};
+use crate::{constant::Mode, state::GameState};
 
 #[function_component]
 pub fn Statusline() -> Html {
-    let status = use_selector(|state: &GameState| state.status);
+    let mode = use_selector(|state: &GameState| state.mode);
     let stats = use_selector(|state: &GameState| state.stats);
     let language = use_selector(|state: &GameState| state.language.clone());
 
-    let mode = {
-        if *status == Status::Playing {
-            Mode::INSERT
-        } else {
-            Mode::NORMAL
-        }
-    };
-
     let mode_class = {
-        if mode == Mode::NORMAL {
+        if *mode == Mode::NORMAL {
             "bg-green"
         } else {
             "bg-blue"

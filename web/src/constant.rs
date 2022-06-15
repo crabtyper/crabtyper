@@ -2,6 +2,7 @@ use strum_macros::Display;
 
 #[derive(Clone, Copy, Debug, Display, PartialEq)]
 pub enum Status {
+    Loading,
     Ready,
     Playing,
     Passed,
@@ -9,7 +10,7 @@ pub enum Status {
 
 impl Default for Status {
     fn default() -> Self {
-        Status::Ready
+        Status::Loading
     }
 }
 

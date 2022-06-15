@@ -29,15 +29,15 @@ pub fn Game() -> Html {
     use_effect_with_deps(
         {
             let state = state.clone();
-            let api_url = if let Some(url) = option_env!("API_URL") {
-                url
-            } else {
-                "https://crabtyper-api.azurewebsites.net/api/snippets/random"
-            };
-
             move |_| {
                 match state.status {
-                    Status::Ready => {
+                    Status::Loading => {
+                        gloo::console::debug!("getting snippet");
+                        let api_url = if let Some(url) = option_env!("API_URL") {
+                            url
+                        } else {
+                            "https://crabtyper-api.azurewebsites.net/api/snippets/random"
+                        };
                         wasm_bindgen_futures::spawn_local(async move {
                             let snippet: Snippet = Request::get(api_url)
                                 .send()
@@ -49,7 +49,9 @@ pub fn Game() -> Html {
 
                             dispatch.apply(Action::NewSnippet(snippet));
                         });
-                    }
+
+                    },
+                    Status::Ready => (),
                     Status::Playing => {
                         *timer.borrow_mut() = Some(Interval::new(1000, move || {
                             dispatch.apply(Action::Tick);

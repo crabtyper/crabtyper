@@ -2,7 +2,7 @@ use std::rc::Rc;
 
 use crate::{
     components::game::Snippet,
-    constant::Status,
+    constant::{Mode, Status},
     utils::calculate::{calculate_accuracy, calculate_progress, calculate_wpm},
 };
 
@@ -33,6 +33,7 @@ pub struct GameState {
     pub code: Code,
     pub stats: Stats,
     pub status: Status,
+    pub mode: Mode,
     pub language: String,
 }
 
@@ -40,6 +41,7 @@ pub enum Action {
     NewSnippet(Snippet),
     KeyPress(char),
     BackSpace,
+    ChangeMode(Mode),
     Tick,
     Reset,
 }
@@ -50,22 +52,29 @@ impl Reducer<GameState> for Action {
 
         match self {
             Action::NewSnippet(snippet) => {
-                let mut new_state = GameState::reset();
+                *state = GameState::reset();
 
                 let mut chars = snippet.code.chars();
 
-                new_state.code.cursor = chars.next();
-                new_state.code.remaining = chars.as_str().to_string();
-                new_state.code.lines = snippet.code.lines().count() - 1;
+                state.code.cursor = chars.next();
+                state.code.remaining = chars.as_str().to_string();
+                state.code.lines = snippet.code.lines().count() - 1;
 
-                new_state.language = snippet.language.clone();
+                state.language = snippet.language.clone();
+                state.status = Status::Ready;
 
-                Rc::new(new_state)
+                gamestate
             }
 
             Action::Tick => {
                 state.stats.time += 1;
                 state.stats.wpm = calculate_wpm(state.stats.time, &state.code.correct);
+
+                gamestate
+            }
+
+            Action::ChangeMode(mode) => {
+                state.mode = *mode;
 
                 gamestate
             }
@@ -94,7 +103,8 @@ impl Reducer<GameState> for Action {
             Action::KeyPress(key) => {
                 // change status to playing
                 if state.status != Status::Passed {
-                    state.status = Status::Playing
+                    state.status = Status::Playing;
+                    state.mode = Mode::INSERT;
                 };
 
                 let mut code = &mut state.code;
