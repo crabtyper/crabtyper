@@ -42,4 +42,4 @@ jobs:
           app_location: "/web"
           app_build_command: "echo 'manually built the web/'"
           output_location: "./dist"
-          production_brach: "main"
+          production_branch: "main"
