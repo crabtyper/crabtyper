@@ -119,7 +119,7 @@ pub fn Window() -> Html {
                 <LineNumber lines={code.lines}/>
                 <pre {onclick} class="relative display-inline w-full break-all" style="tab-size: 4;">
                     <code ref={correct_ref} class={hljs_classes} />
-                    <code class="text-red">{wrong}</code>
+                    <code class="bg-red">{wrong}</code>
                     <code class="bg-white-light text-black-light">{cursor}</code>
                     <code class="text-white">{&code.remaining}</code>
                     <input
