@@ -19,7 +19,7 @@
   </a>
 </div>
 
-This webaplication is completly written in Rust. Why? Because it's blazingly fast! Well not yet,
+This webaplication is completely written in Rust. Why? Because it's blazingly fast! Well not yet,
 currently we still have no direct access to the browsers DOM API from WebAssembly, which is why we
 still have to use Javascript to do so. The project is mainly created for learning about Rust and WebAssembly.
 
