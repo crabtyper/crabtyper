@@ -24,7 +24,7 @@ pub fn Window() -> Html {
         let input_ref = input_ref.clone();
         let dispatch = dispatch.clone();
 
-        use_event_with_window("keydown", move |e: KeyboardEvent| {
+        use_event_with_window("keyup", move |e: KeyboardEvent| {
             let key = e.key();
 
             if *mode == Mode::NORMAL {
