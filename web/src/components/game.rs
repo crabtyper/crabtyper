@@ -32,7 +32,6 @@ pub fn Game() -> Html {
             move |_| {
                 match state.status {
                     Status::Loading => {
-                        gloo::console::debug!("getting snippet");
                         let api_url = if let Some(url) = option_env!("API_URL") {
                             url
                         } else {
