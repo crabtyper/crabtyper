@@ -75,19 +75,10 @@ impl Reducer<GameState> for Action {
 
                 if !code.wrong.is_empty() {
                     if let Some(cursor) = code.cursor {
-                        if cursor == '❚' {
-                            code.remaining = format!("{}{}", ' ', code.remaining);
-                        } else {
-                            code.remaining = format!("{}{}", cursor, code.remaining);
-                        }
+                        code.remaining = format!("{}{}", cursor, code.remaining);
                     }
 
                     code.cursor = code.wrong.pop();
-                    if let Some(c) = code.cursor {
-                        if c == '❚' {
-                            code.cursor = Some(' ')
-                        }
-                    }
 
                     while code.cursor == Some('\t') {
                         if let Some(cursor) = code.cursor {
@@ -140,15 +131,7 @@ impl Reducer<GameState> for Action {
                         stats.combo = 0;
                         stats.mistakes += 1;
 
-                        // make space character visible
-                        if let Some(cursor) = code.cursor {
-                            if cursor == ' ' {
-                                code.wrong.push('❚');
-                            } else {
-                                code.wrong.push(cursor);
-                            }
-                        }
-
+                        code.wrong.push(cursor);
                         code.cursor = chars.next();
 
                         // skip tab charcters
