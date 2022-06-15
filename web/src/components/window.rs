@@ -23,7 +23,6 @@ pub fn Window() -> Html {
             move |_| {
                 let input = input_ref.cast::<HtmlInputElement>().unwrap();
                 input.focus().unwrap();
-
                 || ()
             }
         },
@@ -65,21 +64,27 @@ pub fn Window() -> Html {
 
     let onkeydown = {
         let wrong = code.wrong.clone();
+        let input_ref = input_ref.clone();
 
         Callback::from(move |e: KeyboardEvent| {
-            let mut key: Option<char> = None;
-            let key_string: String = e.key();
-
-            if key_string == "Enter" {
-                key = Some('\n');
-            } else if key_string == "Tab" {
-                e.prevent_default();
-                key = Some('\t');
-            } else if key_string == "Backspace" && !wrong.is_empty() {
-                dispatch.apply(Action::BackSpace)
-            } else if key_string.len() == 1 {
-                key = key_string.chars().next();
-            }
+            let key: Option<char> = match e.key().as_str() {
+                "Escape" => {
+                    let input = input_ref.cast::<HtmlInputElement>().unwrap();
+                    input.blur().unwrap();
+                    None
+                }
+                "Backspace" if !wrong.is_empty() => {
+                    dispatch.apply(Action::BackSpace);
+                    None
+                }
+                "Enter" => Some('\n'),
+                "Tab" => {
+                    e.prevent_default();
+                    Some('\t')
+                }
+                k if k.len() == 1 => k.chars().next(),
+                _ => None,
+            };
 
             if let Some(k) = key {
                 if k.is_alphanumeric() || k.is_whitespace() || k.is_ascii_punctuation() {
