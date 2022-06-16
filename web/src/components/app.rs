@@ -9,15 +9,11 @@ use crate::components::pagelayout::PageLayout;
 pub fn App() -> Html {
     html! {
         <PageLayout>
-            <div class="mt-6">
-                <Header />
-            </div>
+            <Header />
             <main>
                 <Game/>
             </main>
-            <div class="mb-8">
-                <Footer />
-            </div>
+            <Footer />
         </PageLayout>
     }
 }

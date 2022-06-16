@@ -3,7 +3,7 @@ use yew::prelude::*;
 #[function_component]
 pub fn Header() -> Html {
     html! {
-        <header class="flex flex-row justify-between font-bold">
+        <header class="flex flex-row justify-between font-bold mt-6">
             <a href="#">{"CrabTyper"}</a>
 
             <a class="flex items-center gap-2" href="#">

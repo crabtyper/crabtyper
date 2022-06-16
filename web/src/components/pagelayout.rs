@@ -8,8 +8,8 @@ pub struct PageLayoutProps {
 #[function_component]
 pub fn PageLayout(props: &PageLayoutProps) -> Html {
     html! {
-        <div class="container mx-auto flex flex-col justify-between h-full">
+        <section class="container mx-auto flex flex-col justify-between h-full">
             { for props.children.iter() }
-        </div>
+        </section>
     }
 }
