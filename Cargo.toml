@@ -1,7 +1,9 @@
 [workspace]
 
 members = [
-  "crates/**",
+  "crates/web",
+  "crates/api",
+  "crates/parser",
 ]
 
 [profile.release]
