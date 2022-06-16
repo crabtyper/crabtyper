@@ -6,7 +6,7 @@ use yewdux::prelude::use_store;
 use crate::state::{Action, GameState};
 
 #[function_component]
-pub fn Result() -> Html {
+pub fn ResultView() -> Html {
     let (state, dispatch) = use_store::<GameState>();
 
     use_effect({
@@ -23,7 +23,7 @@ pub fn Result() -> Html {
     });
 
     html! {
-        <div class="flex flex-col justify-center items-center gap-6">
+        <section class="flex flex-col justify-center items-center gap-6">
             <div class="flex flex-col items-center gap-2">
                 <h1 class="text-4xl font-bold">{format!("You typed {} WPM!", state.stats.wpm)}</h1>
                 <img src="img/crab.png"  class="w-[300px]"/>
@@ -49,6 +49,6 @@ pub fn Result() -> Html {
                 </div>
                 <p class="text-white text-lg">{"press 'r' to restart"}</p>
             </div>
-        </div>
+        </section>
     }
 }

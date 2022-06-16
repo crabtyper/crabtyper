@@ -6,7 +6,7 @@ use yewdux::prelude::use_store;
 use gloo::timers::callback::Interval;
 use gloo::net::http::Request;
 
-use crate::components::result::Result;
+use crate::components::result_view::ResultView;
 use crate::components::vim::Vim;
 use crate::constant::Status;
 use crate::state::{GameState, Action};
@@ -21,6 +21,16 @@ pub struct Snippet {
     pub language: String,
 }
 
+async fn get_random_snippet() -> Result<Snippet, gloo::net::Error> {
+    let url = if let Some(url) = option_env!("API_URL") {
+        url
+    } else {
+        "https://crabtyper-api.azurewebsites.net/api/snippets/random"
+    };
+
+    Request::get(url).send().await?.json().await
+}
+
 #[function_component]
 pub fn Game() -> Html {
     let (state, dispatch) = use_store::<GameState>();
@@ -32,21 +42,12 @@ pub fn Game() -> Html {
             move |_| {
                 match state.status {
                     Status::Loading => {
-                        let api_url = if let Some(url) = option_env!("API_URL") {
-                            url
-                        } else {
-                            "https://crabtyper-api.azurewebsites.net/api/snippets/random"
-                        };
                         wasm_bindgen_futures::spawn_local(async move {
-                            let snippet: Snippet = Request::get(api_url)
-                                .send()
-                                .await
-                                .unwrap()
-                                .json()
-                                .await
-                                .unwrap();
-
-                            dispatch.apply(Action::NewSnippet(snippet));
+                            if let Ok(snippet) = get_random_snippet().await {
+                                dispatch.apply(Action::NewSnippet(snippet));
+                            } else {
+                                gloo::console::error!("Error: could not fetch snippets!");
+                            }
                         });
 
                     },
@@ -68,7 +69,7 @@ pub fn Game() -> Html {
 
     html! {
         if state.status == Status::Passed {
-            <Result />
+            <ResultView />
         } else {
             <Vim />
         }
