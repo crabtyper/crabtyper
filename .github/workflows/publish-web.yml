@@ -9,10 +9,14 @@ on:
       - "web/**"
       - "Cargo.toml"
       - ".github/workflows/publish-web.yml"
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+      - develop
 
 jobs:
   publish:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
