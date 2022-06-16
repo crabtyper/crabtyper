@@ -6,7 +6,7 @@ on:
       - main
       - develop
     paths:
-      - "web/**"
+      - "crates/web/**"
       - "Cargo.toml"
       - ".github/workflows/publish-web.yml"
   pull_request:

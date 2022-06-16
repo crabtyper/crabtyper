@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "api/**"
+      - "crates/api/**"
       - ".github/workflows/publish-api.yml"
 
 jobs:
