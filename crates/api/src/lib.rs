@@ -52,6 +52,7 @@ pub async fn start_server() -> std::io::Result<()> {
                 Cors::default()
                 .allowed_origin("https://crabtyper.com")
                 .allowed_origin("https://www.crabtyper.com")
+                .allowed_origin("https://wonderful-desert-06f1b7f03-develop.westeurope.1.azurestaticapps.net/")
                 .allowed_origin("localhost")
                 .allowed_methods(vec!["GET", "POST"])
                 .allowed_header(header::CONTENT_TYPE)
