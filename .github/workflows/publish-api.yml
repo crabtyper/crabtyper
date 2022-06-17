@@ -28,7 +28,7 @@ jobs:
         with:
           push: true
           tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_e910a6899d2e4a72b6aff09f75c027a7 }}/brancob/crabtyper-api:${{ github.sha }}
-          file: crates/api/Dockerfile
+          context: crates/api/
   deploy:
     runs-on: ubuntu-latest
     needs: build
