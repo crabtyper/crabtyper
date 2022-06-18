@@ -3,8 +3,12 @@ name: Rust linter
 on:
   push:
     branches: [ main ]
+    paths:
+      - "**/*.rs"
   pull_request:
     branches: [ main, develop ]
+    paths:
+      - "**/*.rs"
 
 jobs:
   style:
