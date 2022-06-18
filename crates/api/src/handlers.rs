@@ -1,8 +1,8 @@
 use super::DbPool;
 use crate::models::InputLanguage;
 use crate::{db, models::InputSnippet};
-use actix_web::{web, Error, HttpResponse, get, post, delete};
 use actix_web::error::ErrorInternalServerError;
+use actix_web::{delete, get, post, web, Error, HttpResponse};
 
 #[get("")]
 pub async fn get_languages(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
@@ -57,12 +57,12 @@ pub async fn get_random_snippet_by_lang(
     language: web::Path<String>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-            let conn = pool.get()?;
-            db::get_single_random_snippet_by_lang(&conn, language.into_inner())
-        })
-        .await?
-        .map(|snippet| HttpResponse::Ok().json(snippet))
-        .map_err(ErrorInternalServerError)
+        let conn = pool.get()?;
+        db::get_single_random_snippet_by_lang(&conn, language.into_inner())
+    })
+    .await?
+    .map(|snippet| HttpResponse::Ok().json(snippet))
+    .map_err(ErrorInternalServerError)
 }
 
 #[post("")]
@@ -70,14 +70,13 @@ pub async fn add_snippet(
     pool: web::Data<DbPool>,
     item: web::Json<InputSnippet>,
 ) -> Result<HttpResponse, Error> {
-    web::block(move || 
-        {
-            let conn = pool.get()?;
-            db::add_single_snippet(&conn, item)
-        })
-        .await?
-        .map(|snippet| HttpResponse::Ok().json(snippet))
-        .map_err(ErrorInternalServerError)
+    web::block(move || {
+        let conn = pool.get()?;
+        db::add_single_snippet(&conn, item)
+    })
+    .await?
+    .map(|snippet| HttpResponse::Ok().json(snippet))
+    .map_err(ErrorInternalServerError)
 }
 
 #[delete("/{snippet_id}")]
@@ -88,8 +87,8 @@ pub async fn delete_snippet(
     web::block(move || {
         let conn = pool.get()?;
         db::delete_single_snippet(&conn, snippet_id.into_inner())
-            })
-        .await?
-        .map(|user| HttpResponse::Ok().json(user))
-        .map_err(ErrorInternalServerError)
+    })
+    .await?
+    .map(|user| HttpResponse::Ok().json(user))
+    .map_err(ErrorInternalServerError)
 }

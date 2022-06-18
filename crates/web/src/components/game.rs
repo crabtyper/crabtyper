@@ -1,15 +1,15 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
+use gloo::net::http::Request;
+use gloo::timers::callback::Interval;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
-use gloo::timers::callback::Interval;
-use gloo::net::http::Request;
 
 use crate::components::result_view::ResultView;
 use crate::components::vim::Vim;
 use crate::constant::Status;
-use crate::state::{GameState, Action};
+use crate::state::{Action, GameState};
 
 use serde::Deserialize;
 
@@ -49,8 +49,7 @@ pub fn Game() -> Html {
                                 gloo::console::error!("Error: could not fetch snippets!");
                             }
                         });
-
-                    },
+                    }
                     Status::Ready => (),
                     Status::Playing => {
                         *timer.borrow_mut() = Some(Interval::new(1000, move || {

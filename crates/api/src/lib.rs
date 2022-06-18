@@ -2,19 +2,14 @@
 extern crate diesel;
 
 use actix_cors::Cors;
-use actix_web::{web, App, HttpServer, http::header, middleware};
+use actix_web::{http::header, middleware, web, App, HttpServer};
 use diesel::{
     r2d2::{self, ConnectionManager},
     SqliteConnection,
 };
 use handlers::{
-    get_languages, 
-    add_language,
-    get_snippets, 
-    get_random_snippet, 
-    get_random_snippet_by_lang, 
-    add_snippet, 
-    delete_snippet, 
+    add_language, add_snippet, delete_snippet, get_languages, get_random_snippet,
+    get_random_snippet_by_lang, get_snippets,
 };
 
 pub mod db;
@@ -31,7 +26,8 @@ pub async fn start_server() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("debug"));
 
     let server_port = if let Ok(port) = std::env::var("PORT") {
-        port.parse::<u16>().expect("Could not convert PORT env to string!")
+        port.parse::<u16>()
+            .expect("Could not convert PORT env to string!")
     } else {
         5000
     };
@@ -42,9 +38,10 @@ pub async fn start_server() -> std::io::Result<()> {
         .build(manager)
         .expect("Failed to create pool.");
 
-
-    log::info!("{}", format!("starting HTTP server at http://0.0.0.0:{server_port}"));
-    
+    log::info!(
+        "{}",
+        format!("starting HTTP server at http://0.0.0.0:{server_port}")
+    );
 
     HttpServer::new(move || {
         App::new()
