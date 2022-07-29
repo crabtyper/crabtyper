@@ -1,5 +1,8 @@
 use crate::{
-    components::linenumber::LineNumber,
+    components::{
+        cursor::{Cursor, CursorStyle},
+        linenumber::LineNumber,
+    },
     constant::Mode,
     external,
     state::{Action, GameState},
@@ -120,10 +123,11 @@ pub fn Window() -> Html {
     html! {
         <div class="flex flex-row px-6 pt-6 gap-2">
             <LineNumber lines={code.lines}/>
+            <Cursor style={CursorStyle::Line} current_char={cursor.clone()}/>
             <pre class="relative display-inline w-full break-all" style="tab-size: 4;">
                 <code ref={correct_ref} class={hljs_classes} />
                 <code class="bg-red">{wrong}</code>
-                <code class="bg-white-light text-black-light">{cursor}</code>
+                <code class="text-white">{cursor.clone()}</code>
                 <code class="text-white">{&code.remaining}</code>
                 <input
                     ref={input_ref}

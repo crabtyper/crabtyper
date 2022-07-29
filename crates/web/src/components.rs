@@ -1,4 +1,5 @@
 pub mod app;
+pub mod cursor;
 pub mod footer;
 pub mod game;
 pub mod header;

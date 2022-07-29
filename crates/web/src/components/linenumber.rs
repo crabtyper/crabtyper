@@ -10,7 +10,7 @@ pub fn line_number(props: &LineNumberProps) -> Html {
     let items = 1..=props.lines + 1;
 
     html! {
-        <div class="text-white">
+        <div class="text-white w-8">
             {
                 items.into_iter().map(|line| {
                     html!{<p key={line}>{line}</p>}
