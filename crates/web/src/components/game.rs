@@ -50,7 +50,9 @@ pub fn Game() -> Html {
                             }
                         });
                     }
-                    Status::Ready => (),
+                    Status::Ready => {
+                        *timer.borrow_mut() = None;
+                    }
                     Status::Playing => {
                         *timer.borrow_mut() = Some(Interval::new(1000, move || {
                             dispatch.apply(Action::Tick);
