@@ -6,6 +6,7 @@ use crate::{
     constant::Mode,
     external,
     state::{Action, GameState},
+    utils::char_width_reader::{read_char_widths, CharWidthRequest},
 };
 use wasm_bindgen::JsValue;
 use web_sys::{HtmlElement, HtmlInputElement};
@@ -119,6 +120,22 @@ pub fn Window() -> Html {
         "text-white",
         format!("language-{}", language.to_lowercase())
     );
+
+    {
+        // let req: Rc<RefCell<_>> = Rc::new(RefCell::new(vec![]));
+        let mut req = vec![];
+
+        let full_text = format!("{}{}", &code.correct, &code.remaining);
+
+        for c in full_text.chars() {
+            req.push(CharWidthRequest {
+                char: Some(c),
+                width: None,
+            })
+        }
+
+        read_char_widths(&mut req);
+    }
 
     html! {
         <div class="flex flex-row px-6 pt-6 gap-2">
