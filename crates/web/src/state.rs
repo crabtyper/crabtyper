@@ -8,7 +8,7 @@ use crate::{
 
 use yewdux::prelude::*;
 
-#[derive(Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Code {
     pub lines: usize,
     pub cursor: Option<char>,
@@ -17,7 +17,7 @@ pub struct Code {
     pub wrong: String,
 }
 
-#[derive(Default, Clone, Copy, PartialEq)]
+#[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Stats {
     pub progress: u8,
     pub mistakes: u8,
@@ -28,7 +28,7 @@ pub struct Stats {
     pub max_combo: u8,
 }
 
-#[derive(Default, Clone, PartialEq, Store)]
+#[derive(Debug, Default, Clone, PartialEq, Store)]
 pub struct GameState {
     pub code: Code,
     pub stats: Stats,

@@ -7,7 +7,9 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      sans: ["Hack", "sans-serif", "Arial"],
+      sans: ["Hack"],
+      serif: ["Hack"],
+      mono: ["Hack"],
     },
     colors: {
       black: "#1E222A",
