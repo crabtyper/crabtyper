@@ -62,7 +62,9 @@ pub fn Buffer(props: &BufferProps) -> Html {
                 let remaining_element = remaining_ref.cast::<HtmlElement>().unwrap();
                 let mut new_pos = *pos;
                 new_pos.left = remaining_element.offset_left();
-                new_pos.top = remaining_element.offset_top();
+                // for some reason the offset_top() starting value is 3
+                new_pos.top = remaining_element.offset_top() - 3;
+                gloo::console::debug!(remaining_element.offset_top());
 
                 pos.set(new_pos);
                 || ()
@@ -125,7 +127,7 @@ pub fn Buffer(props: &BufferProps) -> Html {
 
     html! {
         <pre class="relative display-inline w-full break-all" style="tab-size: 4;">
-            <Cursor position={*cursor_position} smooth={true} style={CursorStyle::Line} />
+            <Cursor position={*cursor_position} smooth={true} style={CursorStyle::Line} cursor={cursor.clone()}/>
             <code ref={correct_ref} class={hljs_classes}>{code.correct.clone()}</code>
             <code class="bg-red">{wrong}</code>
             <code ref={remaining_ref} class="text-white">{format!("{}{}", &cursor, &code.remaining)}</code>
