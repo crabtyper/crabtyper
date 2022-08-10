@@ -31,7 +31,7 @@ pub fn Cursor(props: &CursorProps) -> Html {
 
     let smooth_class = {
         if props.smooth {
-            Some(String::from("transition-all duration-75"))
+            Some(String::from("transition-all duration-100"))
         } else {
             None
         }
