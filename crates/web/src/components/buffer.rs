@@ -84,7 +84,11 @@ pub fn Buffer(props: &BufferProps) -> Html {
                     None
                 }
                 "Backspace" if !wrong.is_empty() => {
-                    dispatch.apply(Action::BackSpace);
+                    if e.ctrl_key() {
+                        dispatch.apply(Action::CtrlBackSpace);
+                    } else {
+                        dispatch.apply(Action::BackSpace);
+                    }
                     None
                 }
                 "Enter" => Some('\n'),

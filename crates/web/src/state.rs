@@ -41,6 +41,7 @@ pub enum Action {
     NewSnippet(Snippet),
     KeyPress(char),
     BackSpace,
+    CtrlBackSpace,
     ChangeMode(Mode),
     Tick,
     Reset,
@@ -97,6 +98,26 @@ impl Reducer<GameState> for Action {
                     }
                 }
 
+                gamestate
+            }
+
+            Action::CtrlBackSpace => {
+                let mut code = &mut state.code;
+
+                while !code.wrong.is_empty() {
+                    if let Some(cursor) = code.cursor {
+                        code.remaining = format!("{}{}", cursor, code.remaining);
+                    }
+
+                    code.cursor = code.wrong.pop();
+
+                    while code.cursor == Some('\t') {
+                        if let Some(cursor) = code.cursor {
+                            code.remaining = format!("{}{}", cursor, code.remaining);
+                        }
+                        code.cursor = code.wrong.pop();
+                    }
+                }
                 gamestate
             }
 
