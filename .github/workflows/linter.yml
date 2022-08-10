@@ -1,17 +1,8 @@
 name: Rust linter
 
-on:
-  push:
-    branches: [ main ]
-    paths:
-      - "**/*.rs"
-  pull_request:
-    branches: [ main, develop ]
-    paths:
-      - "**/*.rs"
-
 jobs:
   style:
+    name: Format code
     runs-on: ubuntu-latest
 
     steps:
@@ -30,6 +21,7 @@ jobs:
           args: --all -- --check
 
   clippy:
+    name: Linter
     runs-on: ubuntu-latest
 
     steps:
@@ -46,4 +38,4 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --all-targets -- -D warnings
+          # args: --all-targets -- -D warnings

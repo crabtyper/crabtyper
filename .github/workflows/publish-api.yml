@@ -8,6 +8,9 @@ on:
       - ".github/workflows/publish-api.yml"
 
 jobs:
+  lint:
+    uses: ./linter.yml
+
   build:
     runs-on: ubuntu-latest
     steps:

@@ -15,6 +15,9 @@ on:
       - develop
 
 jobs:
+  lint:
+    uses: ./linter.yml
+
   publish:
     runs-on: ubuntu-latest
     steps:
