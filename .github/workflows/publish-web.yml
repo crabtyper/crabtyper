@@ -16,7 +16,7 @@ on:
 
 jobs:
   lint:
-    uses: ./linter.yml
+    uses: ./github/workflows/linter.yaml
 
   publish:
     runs-on: ubuntu-latest
