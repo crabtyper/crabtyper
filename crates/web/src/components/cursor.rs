@@ -39,7 +39,7 @@ pub fn Cursor(props: &CursorProps) -> Html {
 
     let pos = props.position;
     let style = format!(
-        "height: 22px; left: {}px; top: {}px; right: {}px; bottom: {}px",
+        "height: 24px; left: {}px; top: {}px; right: {}px; bottom: {}px",
         pos.left, pos.top, pos.right, pos.bottom
     );
 
@@ -48,7 +48,7 @@ pub fn Cursor(props: &CursorProps) -> Html {
     html! {
         if *mode == Mode::NORMAL || props.style == CursorStyle::Block {
             <div
-                class={classes!(&base_classes, "text-black-light", "overflow-hidden", "inline-block", "w-fit")}
+                class={classes!(&base_classes, "text-black-light", "overflow-hidden", "inline-block", "w-fit", "text-center")}
                 style={style.clone()}
             >
                 {&props.cursor}
