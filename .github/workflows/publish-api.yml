@@ -9,7 +9,7 @@ on:
 
 jobs:
   lint:
-    uses: ./.github/workflows/linter.yaml
+    uses: ./.github/workflows/linter.yml
 
   build:
     runs-on: ubuntu-latest
