@@ -1,5 +1,8 @@
 name: Rust linter
 
+on:
+  workflow_call:
+
 jobs:
   style:
     name: Format code
