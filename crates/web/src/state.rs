@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{rc::Rc, str::Chars};
 
 use crate::{
     components::game::Snippet,
@@ -63,21 +63,15 @@ impl Reducer<GameState> for Action {
 
                 state.language = snippet.language.clone();
                 state.status = Status::Ready;
-
-                gamestate
             }
 
             Action::Tick => {
                 state.stats.time += 1;
                 state.stats.wpm = calculate_wpm(state.stats.time, &state.code.correct);
-
-                gamestate
             }
 
             Action::ChangeMode(mode) => {
                 state.mode = *mode;
-
-                gamestate
             }
 
             Action::BackSpace => {
@@ -97,8 +91,6 @@ impl Reducer<GameState> for Action {
                         code.cursor = code.wrong.pop();
                     }
                 }
-
-                gamestate
             }
 
             Action::CtrlBackSpace => {
@@ -118,7 +110,6 @@ impl Reducer<GameState> for Action {
                         code.cursor = code.wrong.pop();
                     }
                 }
-                gamestate
             }
 
             Action::KeyPress(key) => {
@@ -144,7 +135,6 @@ impl Reducer<GameState> for Action {
                         code.correct.push(*key);
                         code.cursor = chars.next();
 
-                        // skip tab characters
                         while code.cursor == Some('\t') {
                             code.correct.push('\t');
                             code.cursor = chars.next();
@@ -175,16 +165,14 @@ impl Reducer<GameState> for Action {
 
                 code.remaining = chars.as_str().to_string();
                 stats.progress = calculate_progress(&code.correct, &code.remaining);
-
-                gamestate
             }
 
             Action::Reset => {
                 *state = GameState::reset();
-
-                gamestate
             }
         }
+
+        gamestate
     }
 }
 
