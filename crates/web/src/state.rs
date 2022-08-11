@@ -58,7 +58,7 @@ impl Reducer<GameState> for Action {
                 let mut chars = snippet.code.chars();
 
                 state.code.cursor = chars.next();
-                state.code.remaining = chars.as_str().to_string();
+                state.code.remaining = chars.collect::<String>();
                 state.code.lines = snippet.code.lines().count() - 1;
 
                 state.language = snippet.language.clone();
@@ -75,40 +75,15 @@ impl Reducer<GameState> for Action {
             }
 
             Action::BackSpace => {
-                let mut code = &mut state.code;
-
-                if !code.wrong.is_empty() {
-                    if let Some(cursor) = code.cursor {
-                        code.remaining = format!("{}{}", cursor, code.remaining);
-                    }
-
-                    code.cursor = code.wrong.pop();
-
-                    while code.cursor == Some('\t') {
-                        if let Some(cursor) = code.cursor {
-                            code.remaining = format!("{}{}", cursor, code.remaining);
-                        }
-                        code.cursor = code.wrong.pop();
-                    }
-                }
+                GameState::delete_wrong_char(&mut state.code);
             }
 
             Action::CtrlBackSpace => {
-                let mut code = &mut state.code;
+                let code = &mut state.code;
 
+                // TODO: do this in one step?
                 while !code.wrong.is_empty() {
-                    if let Some(cursor) = code.cursor {
-                        code.remaining = format!("{}{}", cursor, code.remaining);
-                    }
-
-                    code.cursor = code.wrong.pop();
-
-                    while code.cursor == Some('\t') {
-                        if let Some(cursor) = code.cursor {
-                            code.remaining = format!("{}{}", cursor, code.remaining);
-                        }
-                        code.cursor = code.wrong.pop();
-                    }
+                    GameState::delete_wrong_char(code);
                 }
             }
 
@@ -121,7 +96,9 @@ impl Reducer<GameState> for Action {
 
                 let mut code = &mut state.code;
                 let mut stats = &mut state.stats;
-                let mut chars = code.remaining.chars();
+
+                let remaining = code.remaining.clone();
+                let mut remaining_chars = remaining.chars();
 
                 if let Some(cursor) = code.cursor {
                     // correct key press
@@ -133,12 +110,9 @@ impl Reducer<GameState> for Action {
                         }
                         // update the cursor to next key
                         code.correct.push(*key);
-                        code.cursor = chars.next();
+                        code.cursor = remaining_chars.next();
 
-                        while code.cursor == Some('\t') {
-                            code.correct.push('\t');
-                            code.cursor = chars.next();
-                        }
+                        GameState::skip_tabs(SkipTabsFor::Correct, code, &mut remaining_chars);
 
                         // end of code snippet
                         if code.remaining.is_empty() {
@@ -153,17 +127,13 @@ impl Reducer<GameState> for Action {
                         stats.mistakes += 1;
 
                         code.wrong.push(cursor);
-                        code.cursor = chars.next();
+                        code.cursor = remaining_chars.next();
 
-                        // skip tab charcters
-                        while code.cursor == Some('\t') {
-                            code.wrong.push('\t');
-                            code.cursor = chars.next();
-                        }
+                        GameState::skip_tabs(SkipTabsFor::Wrong, code, &mut remaining_chars)
                     }
                 }
 
-                code.remaining = chars.as_str().to_string();
+                code.remaining = remaining_chars.collect::<String>();
                 stats.progress = calculate_progress(&code.correct, &code.remaining);
             }
 
@@ -176,8 +146,52 @@ impl Reducer<GameState> for Action {
     }
 }
 
+#[derive(PartialEq)]
+pub enum SkipTabsFor {
+    Correct,
+    Wrong,
+    Delete,
+}
+
 impl GameState {
     pub fn reset() -> GameState {
         GameState::default()
+    }
+
+    pub fn skip_tabs(skip_for: SkipTabsFor, code: &mut Code, remaining_chars: &mut Chars) {
+        while code.cursor == Some('\t') {
+            match skip_for {
+                SkipTabsFor::Correct => code.correct.push('\t'),
+                SkipTabsFor::Wrong => code.wrong.push('\t'),
+                SkipTabsFor::Delete => {
+                    if let Some(cursor) = code.cursor {
+                        code.remaining = format!("{}{}", cursor, code.remaining);
+                    }
+                }
+            }
+            if skip_for == SkipTabsFor::Delete {
+                code.cursor = code.wrong.pop();
+            } else {
+                code.cursor = remaining_chars.next();
+            }
+        }
+    }
+
+    pub fn delete_wrong_char(code: &mut Code) {
+        if !code.wrong.is_empty() {
+            // move current cursor to remaining
+            if let Some(cursor) = code.cursor {
+                code.remaining = format!("{}{}", cursor, code.remaining);
+            }
+
+            // set the next cursor
+            code.cursor = code.wrong.pop();
+
+            GameState::skip_tabs(
+                SkipTabsFor::Delete,
+                code,
+                &mut code.remaining.clone().chars(),
+            );
+        }
     }
 }
