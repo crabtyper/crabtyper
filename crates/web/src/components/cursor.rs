@@ -3,13 +3,13 @@ use yewdux::prelude::use_selector;
 
 use crate::{constant::Mode, state::GameState};
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum CursorStyle {
     Line,
     Block,
 }
 
-#[derive(Default, PartialEq, Copy, Clone)]
+#[derive(Default, PartialEq, Eq, Copy, Clone)]
 pub struct Position {
     pub left: i32,
     pub top: i32,
@@ -17,7 +17,7 @@ pub struct Position {
     pub bottom: i32,
 }
 
-#[derive(Properties, PartialEq)]
+#[derive(Properties, PartialEq, Eq)]
 pub struct CursorProps {
     pub cursor: String,
     pub style: CursorStyle,

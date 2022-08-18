@@ -1,6 +1,6 @@
 use strum_macros::Display;
 
-#[derive(Clone, Copy, Debug, Display, PartialEq)]
+#[derive(Clone, Copy, Debug, Display, PartialEq, Eq)]
 pub enum Status {
     Loading,
     Ready,
@@ -15,7 +15,7 @@ impl Default for Status {
 }
 
 #[allow(clippy::upper_case_acronyms)]
-#[derive(Debug, Clone, Copy, Display, PartialEq)]
+#[derive(Debug, Clone, Copy, Display, PartialEq, Eq)]
 pub enum Mode {
     NORMAL,
     INSERT,
