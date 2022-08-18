@@ -8,7 +8,7 @@ use crate::{
 
 use yewdux::prelude::*;
 
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct Code {
     pub lines: usize,
     pub cursor: Option<char>,
@@ -17,7 +17,7 @@ pub struct Code {
     pub wrong: String,
 }
 
-#[derive(Debug, Default, Clone, Copy, PartialEq)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub struct Stats {
     pub progress: u8,
     pub mistakes: u8,
@@ -146,7 +146,7 @@ impl Reducer<GameState> for Action {
     }
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum SkipTabsFor {
     Correct,
     Wrong,

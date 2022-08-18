@@ -3,17 +3,17 @@ use std::rc::Rc;
 
 use gloo::net::http::Request;
 use gloo::timers::callback::Interval;
+use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
-use yewdux::prelude::use_store;
+use yewdux::prelude::{use_selector, use_store, Dispatch};
 
 use crate::components::result_view::ResultView;
-use crate::components::vim::Vim;
 use crate::constant::Status;
 use crate::state::{Action, GameState};
 
 use serde::Deserialize;
 
-#[derive(Clone, PartialEq, Deserialize, Debug)]
+#[derive(Clone, PartialEq, Eq, Deserialize, Debug)]
 pub struct Snippet {
     pub id: String,
     pub code: String,
@@ -33,16 +33,18 @@ async fn get_random_snippet() -> Result<Snippet, gloo::net::Error> {
 
 #[function_component]
 pub fn Game() -> Html {
-    let (state, dispatch) = use_store::<GameState>();
+    let dispatch = Dispatch::<GameState>::new();
+    let status = use_selector(|state: &GameState| state.status);
+
     let timer: Rc<RefCell<Option<Interval>>> = use_mut_ref(|| None);
 
     use_effect_with_deps(
         {
-            let state = state.clone();
+            let status = status.clone();
             move |_| {
-                match state.status {
+                match *status {
                     Status::Loading => {
-                        wasm_bindgen_futures::spawn_local(async move {
+                        spawn_local(async move {
                             if let Ok(snippet) = get_random_snippet().await {
                                 dispatch.apply(Action::NewSnippet(snippet));
                             } else {
@@ -65,14 +67,18 @@ pub fn Game() -> Html {
                 || ()
             }
         },
-        state.status,
+        status,
     );
 
     html! {
+        <ResultView />
+    }
+
+    /* html! {
         if state.status == Status::Passed {
             <ResultView />
         } else {
             <Vim />
         }
-    }
+    } */
 }
