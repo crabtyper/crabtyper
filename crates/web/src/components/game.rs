@@ -8,6 +8,7 @@ use yew::prelude::*;
 use yewdux::prelude::{use_selector, use_store, Dispatch};
 
 use crate::components::result_view::ResultView;
+use crate::components::vim::Vim;
 use crate::constant::Status;
 use crate::state::{Action, GameState};
 
@@ -67,18 +68,14 @@ pub fn Game() -> Html {
                 || ()
             }
         },
-        status,
+        status.clone(),
     );
 
     html! {
-        <ResultView />
-    }
-
-    /* html! {
-        if state.status == Status::Passed {
+        if *status == Status::Passed {
             <ResultView />
         } else {
             <Vim />
         }
-    } */
+    }
 }
