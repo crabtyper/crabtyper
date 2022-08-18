@@ -62,7 +62,7 @@ pub fn Buffer(props: &BufferProps) -> Html {
                 let remaining_element = remaining_ref.cast::<HtmlElement>().unwrap();
                 let mut new_pos = *pos;
                 new_pos.left = remaining_element.offset_left();
-                new_pos.top = remaining_element.offset_top() - 2;
+                new_pos.top = remaining_element.offset_top() - 3;
 
                 pos.set(new_pos);
                 || ()
