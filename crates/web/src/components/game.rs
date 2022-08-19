@@ -5,7 +5,7 @@ use gloo::net::http::Request;
 use gloo::timers::callback::Interval;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
-use yewdux::prelude::{use_selector, use_store, Dispatch};
+use yewdux::prelude::{use_selector, Dispatch};
 
 use crate::components::result_view::ResultView;
 use crate::components::vim::Vim;

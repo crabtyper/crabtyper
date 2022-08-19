@@ -4,6 +4,7 @@ use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yewdux::prelude::Dispatch;
 
+use crate::components::command_line::CommandLine;
 use crate::components::statusline::Statusline;
 use crate::components::window::Window;
 use crate::constant::Mode;
@@ -28,9 +29,12 @@ pub fn Vim() -> Html {
 
     html! {
         <div {onclick} class="w-full bg-black-light h-[36rem] shadow-2xl text-lg">
-            <div class="flex flex-col justify-between h-full">
+            <div class="flex flex-col justify-between h-full px-3 pt-6 pb-3">
                 <Window />
-                <Statusline />
+                <div>
+                    <Statusline />
+                    <CommandLine />
+                </div>
             </div>
         </div>
     }

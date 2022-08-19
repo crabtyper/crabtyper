@@ -28,7 +28,7 @@ pub struct Stats {
     pub max_combo: u8,
 }
 
-#[derive(Debug, Default, Clone, PartialEq, Store)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Store)]
 pub struct GameState {
     pub code: Code,
     pub stats: Stats,

@@ -15,6 +15,8 @@ pub fn Window() -> Html {
 
     let lines = use_selector(|state: &GameState| state.code.lines);
     let mode = use_selector(|state: &GameState| state.mode);
+    let correct = use_selector(|state: &GameState| state.code.correct.clone());
+    let wrong = use_selector(|state: &GameState| state.code.wrong.clone());
 
     let input_ref = use_node_ref();
 
@@ -34,9 +36,30 @@ pub fn Window() -> Html {
         }
     });
 
+    let current_line = {
+        let mut w = 0;
+        let mut c = 0;
+
+        if wrong.lines().count() > 1 {
+            w = wrong.lines().count() - 1;
+        }
+
+        if correct.lines().count() > 0 {
+            c = correct.lines().count();
+        }
+
+        let total = w + c;
+
+        if total == 0 {
+            1
+        } else {
+            total
+        }
+    };
+
     html! {
-        <div class="flex flex-row px-6 pt-6 gap-2">
-            <LineNumber lines={*lines}/>
+        <div class="flex flex-row gap-2">
+            <LineNumber lines={*lines} current_line={current_line} />
             <Buffer {input_ref} />
         </div>
     }

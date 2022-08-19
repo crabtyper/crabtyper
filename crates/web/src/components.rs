@@ -10,3 +10,4 @@ pub mod result_view;
 pub mod statusline;
 pub mod vim;
 pub mod window;
+pub mod command_line;
