@@ -1,5 +1,6 @@
 pub mod app;
 pub mod buffer;
+pub mod command_line;
 pub mod cursor;
 pub mod footer;
 pub mod game;
@@ -10,4 +11,3 @@ pub mod result_view;
 pub mod statusline;
 pub mod vim;
 pub mod window;
-pub mod command_line;
