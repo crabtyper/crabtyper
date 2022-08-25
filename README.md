@@ -40,7 +40,13 @@ I plan on adding these features:
 - [ ] Authentication with your github account
 - [ ] Save results and present them in a graph
 - [ ] More snippets
-- [ ] Smooth carrot
+- [ ] User settings
+  - [ ] language
+  - [ ] snippet length
+  - [ ] cursor style
+  - [ ] colorscheme
+  - [ ] statusbar style
+- [x] Smooth carrot
 - [ ] ...
 
 ## Contribute
